@@ -1,32 +1,48 @@
-# React + TypeScript + Vite
+# AntiSocial Net
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+AntiSocial Net es una aplicacion de red social simulada. Esta app nos permite postear, seguir a otros usuarios y comentar las publicaciones de otros usuarios
 
-Currently, two official plugins are available:
+## Tecnologías utilizadas
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- React
+- TypeScript
+- Vite
+- React Bootstrap y Bootstrap
+- React Router DOM
+- Google Fonts (Cormorant Garamond y Jost)
+- OxLint
 
-## React Compiler
+## Instalación y ejecución
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+1. Clonar el repositorio:
 
-## Expanding the Oxlint configuration
+   ```bash
+   git clone https://github.com/guilleguevara245/frontend-unahur-antisocial-net.git
+   ```
 
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
+2. Entrar a la carpeta del proyecto:
 
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
-```
+   ```bash
+   cd frontend-unahur-antisocial-net
+   ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+3. Instalar las dependencias:
+
+   ```bash
+   npm install
+   ```
+
+4. Iniciar el servidor de desarrollo:
+
+   ```bash
+   npm run dev
+   ```
+
+5. Abrir en el navegador la dirección que muestra la terminal (por lo general `http://localhost:5173`).
+
+## Integrantes
+
+- Guillermo Guevara
+- Elias Ezequiel Llorens
+- Tomas Valentin Cardenas
+- Nicolás Alexandro Medina Cabral
