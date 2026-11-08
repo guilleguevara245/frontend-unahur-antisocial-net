@@ -1,0 +1,85 @@
+.tarjeta {
+  background-color: var(--as-superficie);
+  border: 1px solid rgba(47, 59, 59, 0.15);
+  box-shadow: 0 2px 8px var(--as-sombra);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.tarjeta:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 16px var(--as-sombra);
+}
+
+.contenedorImagen {
+  position: relative;
+}
+
+.imagen {
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+}
+
+.imagenesExtra {
+  position: absolute;
+  right: 0.5rem;
+  bottom: 0.5rem;
+  padding: 0.1rem 0.5rem;
+  border-radius: 6px;
+  background-color: rgba(38, 48, 47, 0.75);
+  color: var(--as-barra-texto);
+  font-size: 0.85rem;
+}
+
+.autor {
+  font-family: var(--as-fuente-titulos);
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--as-texto);
+  margin-bottom: 0.5rem;
+}
+
+.descripcion {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  overflow: hidden;
+  line-height: 1.5;
+}
+
+.etiquetas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-bottom: 0.75rem;
+}
+
+.etiqueta {
+  padding: 0.15rem 0.6rem;
+  border: 1px solid var(--as-borde);
+  border-radius: 999px;
+  font-size: 0.8rem;
+  color: var(--as-texto);
+}
+
+.comentarios {
+  color: var(--as-texto-suave);
+}
+
+.pie {
+  background-color: transparent;
+  border-top: none;
+  padding-top: 0;
+}
+
+.boton {
+  --bs-btn-bg: var(--as-boton);
+  --bs-btn-border-color: var(--as-boton);
+  --bs-btn-color: var(--as-boton-texto);
+  --bs-btn-hover-bg: var(--as-boton-hover);
+  --bs-btn-hover-border-color: var(--as-boton-hover);
+  --bs-btn-hover-color: var(--as-boton-texto);
+  --bs-btn-active-bg: var(--as-boton-hover);
+  --bs-btn-active-border-color: var(--as-boton-hover);
+  --bs-btn-active-color: var(--as-boton-texto);
+}
