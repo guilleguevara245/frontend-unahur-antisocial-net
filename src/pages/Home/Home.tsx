@@ -26,11 +26,18 @@ const sobreNosotros = [
   },
 ];
 
+function elegirAlAzar(lista: Post[], cantidad: number): Post[] {
+  const copia = [...lista];
+  copia.sort(() => Math.random() - 0.5);
+  return copia.slice(0, cantidad);
+}
+
 function Home() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [tags, setTags] = useState<Tag[]>([]);
+  const [destacados, setDestacados] = useState<Post[]>([]);
   const [searchParams, setSearchParams] = useSearchParams();
   const tagSeleccionado = searchParams.get("tag");
 
@@ -39,6 +46,7 @@ function Home() {
       try {
         const datos = await obtenerPosts();
         setPosts(datos);
+        setDestacados(elegirAlAzar(datos, 3));
       } catch (error) {
         console.error(error);
         setError("No pudimos cargar las publicaciones. Intentá de nuevo más tarde.");
@@ -149,6 +157,20 @@ function Home() {
           ))}
         </Row>
       </Container>
+
+      {posts.length > 3 && (
+        <Container className="pb-5">
+          <h2 className={`text-center mb-2 ${styles.tituloSeccion}`}>Destacadas</h2>
+          <p className={`text-center mb-4 ${styles.textoSuave}`}>Tres publicaciones elegidas al azar cada vez que entrás.</p>
+          <Row xs={1} md={3} className="g-4">
+            {destacados.map((post) => (
+              <Col key={post.id}>
+                <TarjetaPost post={post} />
+              </Col>
+            ))}
+          </Row>
+        </Container>
+      )}
 
       <section id="feed" className={styles.feed}>
         <Container className="py-5">
