@@ -43,3 +43,21 @@
 .item p {
   color: var(--as-texto-suave);
 }
+
+.botonPortada {
+  border-radius: 6px;
+  padding: 0.5rem 1.5rem;
+}
+
+.feed {
+  background-color: var(--as-superficie-suave);
+  scroll-margin-top: 1rem;
+}
+
+.textoSuave {
+  color: var(--as-texto-suave);
+}
+
+.spinner {
+  color: var(--as-boton);
+}
