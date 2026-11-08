@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
@@ -6,7 +7,8 @@ import Spinner from "react-bootstrap/Spinner";
 import Alert from "react-bootstrap/Alert";
 import TarjetaPost from "../../components/TarjetaPost/TarjetaPost";
 import { obtenerPosts } from "../../api/posts";
-import type { Post } from "../../types/post";
+import { obtenerTags } from "../../api/tags";
+import type { Post, Tag } from "../../types/post";
 import styles from "./Home.module.css";
 
 const sobreNosotros = [
@@ -28,6 +30,9 @@ function Home() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [tags, setTags] = useState<Tag[]>([]);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const tagSeleccionado = searchParams.get("tag");
 
   useEffect(() => {
     async function cargarPosts() {
@@ -44,6 +49,55 @@ function Home() {
     cargarPosts();
   }, []);
 
+  useEffect(() => {
+    async function cargarTags() {
+      try {
+        const datos = await obtenerTags();
+        setTags(datos);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    cargarTags();
+  }, []);
+
+  function elegirTag(nombre: string | null) {
+    if (nombre) {
+      setSearchParams({ tag: nombre });
+    } else {
+      setSearchParams({});
+    }
+  }
+
+  const postsFiltrados = tagSeleccionado
+    ? posts.filter((post) => post.tags.some((tag) => tag.nombre === tagSeleccionado))
+    : posts;
+
+  function filtroTags() {
+    if (tags.length === 0) return null;
+    return (
+      <div className={styles.filtro}>
+        <button
+          type="button"
+          className={`${styles.filtroBoton} ${tagSeleccionado === null ? styles.filtroActivo : ""}`}
+          onClick={() => elegirTag(null)}
+        >
+          Todas
+        </button>
+        {tags.map((tag) => (
+          <button
+            type="button"
+            key={tag.id}
+            className={`${styles.filtroBoton} ${tagSeleccionado === tag.nombre ? styles.filtroActivo : ""}`}
+            onClick={() => elegirTag(tag.nombre)}
+          >
+            #{tag.nombre}
+          </button>
+        ))}
+      </div>
+    );
+  }
+
   function contenidoFeed() {
     if (cargando) {
       return (
@@ -59,9 +113,12 @@ function Home() {
     if (posts.length === 0) {
       return <p className={`text-center py-5 ${styles.textoSuave}`}>Todavía no hay publicaciones. ¡Animate a ser el primero!</p>;
     }
+    if (postsFiltrados.length === 0) {
+      return <p className={`text-center py-5 ${styles.textoSuave}`}>No hay publicaciones con la etiqueta #{tagSeleccionado}.</p>;
+    }
     return (
       <Row xs={1} sm={2} lg={3} className="g-4">
-        {posts.map((post) => (
+        {postsFiltrados.map((post) => (
           <Col key={post.id}>
             <TarjetaPost post={post} />
           </Col>
@@ -96,6 +153,7 @@ function Home() {
       <section id="feed" className={styles.feed}>
         <Container className="py-5">
           <h2 className={`text-center mb-4 ${styles.tituloSeccion}`}>Publicaciones recientes</h2>
+          {filtroTags()}
           {contenidoFeed()}
         </Container>
       </section>
