@@ -89,3 +89,18 @@
   background-color: var(--as-boton);
   color: var(--as-boton-texto);
 }
+
+.paginacion {
+  --bs-pagination-color: var(--as-texto);
+  --bs-pagination-bg: var(--as-superficie);
+  --bs-pagination-border-color: rgba(47, 59, 59, 0.25);
+  --bs-pagination-hover-color: var(--as-texto);
+  --bs-pagination-hover-bg: var(--as-fondo);
+  --bs-pagination-focus-color: var(--as-texto);
+  --bs-pagination-focus-box-shadow: 0 0 0 0.2rem rgba(47, 59, 59, 0.25);
+  --bs-pagination-active-color: var(--as-boton-texto);
+  --bs-pagination-active-bg: var(--as-boton);
+  --bs-pagination-active-border-color: var(--as-boton);
+  --bs-pagination-disabled-color: var(--as-texto-suave);
+  --bs-pagination-disabled-bg: var(--as-superficie-suave);
+}

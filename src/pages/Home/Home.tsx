@@ -5,6 +5,7 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Spinner from "react-bootstrap/Spinner";
 import Alert from "react-bootstrap/Alert";
+import Pagination from "react-bootstrap/Pagination";
 import TarjetaPost from "../../components/TarjetaPost/TarjetaPost";
 import { obtenerPosts } from "../../api/posts";
 import { obtenerTags } from "../../api/tags";
@@ -25,6 +26,8 @@ const sobreNosotros = [
     texto: "Una red social pensada y construida por estudiantes de la Universidad Nacional de Hurlingham.",
   },
 ];
+
+const POSTS_POR_PAGINA = 6;
 
 function elegirAlAzar(lista: Post[], cantidad: number): Post[] {
   const copia = [...lista];
@@ -81,6 +84,38 @@ function Home() {
     ? posts.filter((post) => post.tags.some((tag) => tag.nombre === tagSeleccionado))
     : posts;
 
+  const paginaPedida = Math.floor(Number(searchParams.get("page"))) || 1;
+  const totalPaginas = Math.max(1, Math.ceil(postsFiltrados.length / POSTS_POR_PAGINA));
+  const paginaActual = Math.min(Math.max(paginaPedida, 1), totalPaginas);
+  const postsDePagina = postsFiltrados.slice(
+    (paginaActual - 1) * POSTS_POR_PAGINA,
+    paginaActual * POSTS_POR_PAGINA
+  );
+
+  function cambiarPagina(numero: number) {
+    const parametros: Record<string, string> = {};
+    if (tagSeleccionado) parametros.tag = tagSeleccionado;
+    if (numero > 1) parametros.page = String(numero);
+    setSearchParams(parametros);
+    document.getElementById("feed")?.scrollIntoView({ behavior: "smooth" });
+  }
+
+  function paginacion() {
+    if (totalPaginas <= 1) return null;
+    const numeros = Array.from({ length: totalPaginas }, (_, indice) => indice + 1);
+    return (
+      <Pagination className={`justify-content-center mt-5 ${styles.paginacion}`}>
+        <Pagination.Prev disabled={paginaActual === 1} onClick={() => cambiarPagina(paginaActual - 1)} />
+        {numeros.map((numero) => (
+          <Pagination.Item key={numero} active={numero === paginaActual} onClick={() => cambiarPagina(numero)}>
+            {numero}
+          </Pagination.Item>
+        ))}
+        <Pagination.Next disabled={paginaActual === totalPaginas} onClick={() => cambiarPagina(paginaActual + 1)} />
+      </Pagination>
+    );
+  }
+
   function filtroTags() {
     if (tags.length === 0) return null;
     return (
@@ -125,13 +160,16 @@ function Home() {
       return <p className={`text-center py-5 ${styles.textoSuave}`}>No hay publicaciones con la etiqueta #{tagSeleccionado}.</p>;
     }
     return (
-      <Row xs={1} sm={2} lg={3} className="g-4">
-        {postsFiltrados.map((post) => (
-          <Col key={post.id}>
-            <TarjetaPost post={post} />
-          </Col>
-        ))}
-      </Row>
+      <>
+        <Row xs={1} sm={2} lg={3} className="g-4">
+          {postsDePagina.map((post) => (
+            <Col key={post.id}>
+              <TarjetaPost post={post} />
+            </Col>
+          ))}
+        </Row>
+        {paginacion()}
+      </>
     );
   }
 
