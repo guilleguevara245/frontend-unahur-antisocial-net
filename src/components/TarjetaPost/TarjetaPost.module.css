@@ -3,6 +3,7 @@
   border: 1px solid rgba(47, 59, 59, 0.15);
   box-shadow: 0 2px 8px var(--as-sombra);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+  animation: aparecer 0.5s ease backwards;
 }
 
 .tarjeta:hover {
@@ -82,4 +83,22 @@
   --bs-btn-active-bg: var(--as-boton-hover);
   --bs-btn-active-border-color: var(--as-boton-hover);
   --bs-btn-active-color: var(--as-boton-texto);
+}
+
+@keyframes aparecer {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tarjeta {
+    animation: none;
+    transition: none;
+  }
 }
