@@ -1,0 +1,62 @@
+.barra {
+  background-color: var(--as-barra);
+}
+
+.marca {
+  font-family: var(--as-fuente-titulos);
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: var(--as-barra-texto);
+}
+
+.marca:hover {
+  color: var(--as-barra-texto);
+}
+
+.menu {
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.link {
+  color: var(--as-barra-texto);
+  text-decoration: none;
+}
+
+.link:hover {
+  color: var(--as-barra-texto);
+  opacity: 0.8;
+}
+
+.activo {
+  font-weight: 700;
+}
+
+.botonSesion,
+.botonRegistro {
+  background: transparent;
+  color: var(--as-barra-texto);
+  border: 1px solid var(--as-barra-texto);
+  border-radius: 6px;
+  padding: 0.25rem 0.75rem;
+  margin-left: 0.5rem;
+}
+
+.botonSesion:hover,
+.botonRegistro:hover {
+  background-color: rgba(234, 236, 233, 0.15);
+  color: var(--as-barra-texto);
+  opacity: 1;
+}
+
+@media (max-width: 767px) {
+  .menu {
+    align-items: flex-start;
+    padding: 0.5rem 0;
+  }
+
+  .botonSesion,
+  .botonRegistro {
+    margin: 0.5rem 0 0;
+  }
+}
