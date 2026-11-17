@@ -6,19 +6,26 @@ import Navbar from "react-bootstrap/Navbar";
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import styles from "./Navbar.module.css";
-import Login from "../../pages/Login/Login";
+import LoginModal from "../LoginModal/LoginModal";
+import SignUpModal from "../SignUpModal/SignUpModal";
+
+type ModalAbierto = "login" | "registro" | null;
 
 const NavigationBar = () => {
   const [expandido, setExpandido] = useState(false);
-  const [mostrarLogin, setMostrarLogin] = useState(false);
+  const [modalAbierto, setModalAbierto] = useState<ModalAbierto>(null);
 
   const cerrarMenu = () => {
     setExpandido(false);
   };
 
-  const abrirLogin = () => {
+  const abrirModal = (modal: ModalAbierto) => {
     cerrarMenu();
-    setMostrarLogin(true);
+    setModalAbierto(modal);
+  };
+
+  const cerrarModal = () => {
+    setModalAbierto(null);
   };
 
   const claseLink = ({ isActive }: { isActive: boolean }): string =>
@@ -60,24 +67,29 @@ const NavigationBar = () => {
 
             <button
               type="button"
-              onClick={abrirLogin}
+              onClick={() => abrirModal("login")}
               className={`nav-link ${styles.link}`}
             >
               Iniciar sesión
             </button>
 
-            <NavLink
-              to="/registro"
-              onClick={cerrarMenu}
+            <button
+              type="button"
+              onClick={() => abrirModal("registro")}
               className={`${styles.botonRegistro} ${styles.link}`}
             >
               Registrarse
-            </NavLink>
+            </button>
           </Nav>
         </Navbar.Collapse>
       </Container>
 
-      <Login show={mostrarLogin} onHide={() => setMostrarLogin(false)} />
+      <LoginModal
+        show={modalAbierto === "login"}
+        onHide={cerrarModal}
+        onIrARegistro={() => setModalAbierto("registro")}
+      />
+      <SignUpModal show={modalAbierto === "registro"} onHide={cerrarModal} />
     </Navbar>
   );
 };
