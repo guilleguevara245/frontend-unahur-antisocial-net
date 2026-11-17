@@ -14,6 +14,9 @@ export interface Comentario {
   fecha: string;
   postId: number;
   userId: number;
+  user: {
+    nickName: string;
+  };
   visible: boolean;
 }
 
