@@ -28,3 +28,9 @@ export interface Post {
   imagenes: Imagen[];
   tags: Tag[];
 }
+
+export interface Usuario{
+  id:number,
+  nickName:string,
+  email:string
+}
