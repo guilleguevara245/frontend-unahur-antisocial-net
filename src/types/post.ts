@@ -30,6 +30,7 @@ export interface Post {
   };
   imagenes: Imagen[];
   tags: Tag[];
+  comentariosVisibles:boolean
 }
 
 export interface Usuario{

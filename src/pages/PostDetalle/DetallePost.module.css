@@ -110,3 +110,9 @@
 }
 
 
+
+@media (max-width: 600px) {
+    .contenedor{
+        flex-direction: column;
+    }
+}
