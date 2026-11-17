@@ -5,6 +5,10 @@ import { useParams } from 'react-router-dom'
 import styles from "./DetallePost.module.css"
 import type { Post, Usuario,Comentario} from "../../types/post";
 import { Carousel } from 'react-bootstrap';
+import CarruselImagenes from '../../components/CarruselImagenes/CarruselImagenes';
+import ListaComentarios from '../../components/ListaComentarios/ListaComentarios';
+import EtiquetasPost from '../../components/EtiquetaPost/EtiquetasPost';
+
 function DetallePost() {
   const { id } = useParams<{ id: string }>()
 
@@ -13,7 +17,9 @@ function DetallePost() {
 
   const [usuarios, setUsuarios] = useState<Usuario[]>([]);
   const [comentarios,setComentarios] = useState<Comentario[]>([]);    
-    const obtenerPost=  async ()=>{
+
+  const [nuevoComentario, setNuevoComentario] = useState("");
+  const obtenerPost=  async ()=>{
         const response = await fetch(`http://localhost:3000/post/${id}`)
         const data = await response.json()
         setPostDetalle(data)
@@ -42,6 +48,31 @@ function DetallePost() {
         await obtenerUsuariosComentarios(data)
       }
 
+      const agregarComentario = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!nuevoComentario.trim()) return;
+
+    const respuesta = await fetch(
+            `http://localhost:3000/comments/post/${id}`,
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                  contenido: nuevoComentario,
+                    //a ver 
+                })
+            }
+        );
+
+        if (respuesta.ok) {
+            setNuevoComentario("");
+            await obtenerComentarios();
+        }
+    };
+
     useEffect(() => {
         obtenerPost()
         obtenerComentarios()
@@ -50,71 +81,45 @@ function DetallePost() {
     <div className={styles.contenedor}>
     <div className={styles.contenedor_carrusel_descripcion}>
         {postDetalle && (
-  <Carousel
-      className={styles.carrusel}
-      interval={null}
-      indicators={true}
-      controls={true}
-      prevIcon={<span className={styles.flecha}>‹</span>}
-      nextIcon={<span className={styles.flecha}>›</span>}>
-      {postDetalle?.imagenes.map((imagen) => (
-          <Carousel.Item key={imagen.id}>
-              <div className={styles.contenedor_img}>
-                <Image
-                  src={`http://localhost:3000${imagen.urlImage}`}
-                  fluid
-                  className="d-block mx-auto"
-              />
-              </div>
-          </Carousel.Item>
-      ))}
-  </Carousel>
+          <CarruselImagenes post={postDetalle}></CarruselImagenes>
 
 )}
   <div className={styles.content_descripcion}>
-    <div className={styles.content_tag}>
-       
-    {postDetalle?.tags.map((tag) => (
-        <p key={tag.id}>{tag.nombre}</p>
-    ))}
-      
-    </div>
-    <h3>{usuario?.nickName}</h3>
-    <p>descripcion : {postDetalle?.descripcion}</p>
-  
+      {postDetalle && (
+        <EtiquetasPost post={postDetalle} />
+    )}
+      <h3>{usuario?.nickName}</h3>
+      <p>{postDetalle?.descripcion}</p>
   </div>
       </div>
+  <div >
+      <h5>Comentarios</h5>
+        <div className={styles.conenedor_comentario}>
+          <ListaComentarios
+          comentarios={comentarios}
+          usuarios={usuarios}
+          usuario={usuario}
+          />
+      </div >
+        <div className={styles.contenedor_agregarComentario}>
+          <form onSubmit={agregarComentario}>
+              <textarea
+                  value={nuevoComentario}
+                  onChange={(e) => setNuevoComentario(e.target.value)}
+                  placeholder="Escribe un comentario..."
+                  maxLength={500}
+              />
 
+              <div className={styles.footer_comentario}>
+                  <span>{nuevoComentario.length}/500</span>
 
-    
-<div >
-    <h5>Comentarios</h5>
-
-      <div className={styles.conenedor_comentario}>
-         <ListGroup variant="flush">
-      {comentarios.map((comentario) => {
-          const usuarioComent = usuarios.find(
-              (usuario) => usuario.id === comentario.userId
-          );
-
-          return (
-              <ListGroup.Item key={comentario.id} className={styles.comentario}>
-                  <Image
-                      src="/img/perfil.jpg"
-                      className={styles.imagen_usuario}
-                      roundedCircle
-                  />
-
-                  <div className={styles.contenido_comentario}>
-                      <strong>{usuarioComent?.nickName ?? "Usuario"} <b className={styles.autor}>{usuarioComent?.nickName === usuario?.nickName ? " autor" : ""}</b></strong>
-                      <p>{comentario.contenido}</p>
-                  </div>
-              </ListGroup.Item>
-          );
-      })}
-  </ListGroup>
+                  <button type="submit" disabled={!nuevoComentario.trim()}>
+                      Comentar
+                  </button>
+              </div>
+          </form>
       </div>
-</div>
+  </div>
         
     </div>
   )

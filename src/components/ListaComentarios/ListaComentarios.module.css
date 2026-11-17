@@ -1,0 +1,44 @@
+.conenedor_comentario h5 {
+    font-size: 18px;
+    font-weight: 600;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #dbdbdb;
+}
+
+.comentario {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 15px 0;
+    border-bottom: 1px solid #efefef;
+    background-color: transparent;
+}
+
+.imagen_usuario {
+    width: 20px;
+    height: 20px;
+    min-width: 20px;
+    object-fit: cover;
+}
+
+.contenido_comentario {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.contenido_comentario strong {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 3px;
+}
+
+.contenido_comentario p {
+    font-size: 14px;
+    margin: 0;
+    overflow-wrap: anywhere;
+    color: #262626;
+}
+.autor{
+    font-size: 11px;
+}

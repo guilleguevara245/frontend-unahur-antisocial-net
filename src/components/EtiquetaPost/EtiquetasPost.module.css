@@ -1,0 +1,15 @@
+.content_tag {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 7px;
+}
+
+.content_tag span {
+    padding: 3px 10px;
+    border: 1px solid #d5dbd7;
+    border-radius: 4px;
+    background-color: var(--as-superficie-suave);
+    color: var(--as-texto-suave);
+    font-size: 12px;
+}
