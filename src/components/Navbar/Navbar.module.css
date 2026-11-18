@@ -32,6 +32,11 @@
   font-weight: 700;
 }
 
+.usuario {
+  color: var(--as-barra-texto);
+  font-weight: 500;
+}
+
 .botonSesion,
 .botonRegistro {
   background: transparent;

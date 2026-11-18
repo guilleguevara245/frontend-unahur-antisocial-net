@@ -1,13 +1,17 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
+import { BrowserRouter } from 'react-router-dom'
+import 'bootstrap/dist/css/bootstrap.min.css'
 import './index.css'
 import App from './App.tsx'
-import 'bootstrap/dist/css/bootstrap.min.css';
-import UsuarioProvider from './context/UsuarioProvider.tsx';
+import UsuarioProvider from './context/UsuarioProvider'
+
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <UsuarioProvider>
-      <App />
-    </UsuarioProvider>
+    <BrowserRouter>
+      <UsuarioProvider>
+        <App />
+      </UsuarioProvider>
+    </BrowserRouter>
   </StrictMode>,
 )
