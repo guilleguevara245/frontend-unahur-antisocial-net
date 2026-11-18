@@ -1,11 +1,10 @@
-
-
 import { useState } from "react";
 import { Link, NavLink } from "react-router-dom";
 import Navbar from "react-bootstrap/Navbar";
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import styles from "./Navbar.module.css";
+
 import LoginModal from "../LoginModal/LoginModal";
 import SignUpModal from "../SignUpModal/SignUpModal";
 import useUsuario from "../../context/useUsuario";
@@ -14,6 +13,7 @@ type ModalAbierto = "login" | "registro" | null;
 
 const NavigationBar = () => {
   const { usuario, cerrarSesion } = useUsuario();
+
   const [expandido, setExpandido] = useState(false);
   const [modalAbierto, setModalAbierto] = useState<ModalAbierto>(null);
 
@@ -72,6 +72,14 @@ const NavigationBar = () => {
               Inicio
             </NavLink>
 
+            <NavLink
+              to="/perfil"
+              onClick={cerrarMenu}
+              className={claseLink}
+            >
+              Mi perfil
+            </NavLink>
+
             {usuario ? (
               <>
                 <span className={`navbar-text ${styles.usuario}`}>
@@ -114,7 +122,11 @@ const NavigationBar = () => {
         onHide={cerrarModal}
         onIrARegistro={() => setModalAbierto("registro")}
       />
-      <SignUpModal show={modalAbierto === "registro"} onHide={cerrarModal} />
+
+      <SignUpModal
+        show={modalAbierto === "registro"}
+        onHide={cerrarModal}
+      />
     </Navbar>
   );
 };

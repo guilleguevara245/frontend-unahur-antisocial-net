@@ -1,18 +1,23 @@
-import Home from "./pages/Home/Home"
-import NavigationBar from "./components/Navbar/Navbar"
 import './App.css'
-import { Navigate, Route, Routes } from 'react-router-dom'
+import { Navigate, Route, Routes, BrowserRouter } from 'react-router-dom'
 
-const App = () => {
+import Home from "./pages/Home/Home"
+import Navbar from "./components/Navbar/Navbar"
+import DetallePost from './pages/PostDetalle/DetallePost'
+import PerfilUsuario from './pages/PerfilDeUsuario/PerfilUsuario'
 
+function App() {
   return (
-    <>
-      <NavigationBar />
+    <BrowserRouter>
+      <Navbar />
+
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/post/:id" element={<DetallePost />} />
+        <Route path="/perfil" element={<PerfilUsuario />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
-    </>
+    </BrowserRouter>
   )
 }
 
