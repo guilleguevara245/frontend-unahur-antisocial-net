@@ -1,5 +1,5 @@
 import './App.css'
-import { Navigate, Route, Routes, BrowserRouter } from 'react-router-dom'
+import { Navigate, Route, Routes } from 'react-router-dom'
 
 import Home from "./pages/Home/Home"
 import Navbar from "./components/Navbar/Navbar"
@@ -8,7 +8,7 @@ import PerfilUsuario from './pages/PerfilDeUsuario/PerfilUsuario'
 
 function App() {
   return (
-    <BrowserRouter>
+    <>
       <Navbar />
 
       <Routes>
@@ -17,7 +17,7 @@ function App() {
         <Route path="/perfil" element={<PerfilUsuario />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
-    </BrowserRouter>
+    </>
   )
 }
 
