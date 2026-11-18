@@ -85,13 +85,13 @@ function DetallePost() {
 
 )}
   <div className={styles.content_descripcion}>
-      {postDetalle && (
-        <EtiquetasPost post={postDetalle} />
-    )}
-      <h3>{usuario?.nickName}</h3>
-      <p>{postDetalle?.descripcion}</p>
+        {postDetalle && (
+          <EtiquetasPost post={postDetalle} />
+      )}
+        <h3>{usuario?.nickName}</h3>
+        <p>{postDetalle?.descripcion}</p>
+    </div>
   </div>
-      </div>
   <div >
       <h5>Comentarios</h5>
         <div className={styles.conenedor_comentario}>

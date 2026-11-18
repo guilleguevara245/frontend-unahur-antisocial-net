@@ -53,12 +53,13 @@ function PerfilUsuario() {
                     <h2>{usuarioLog.nickName}</h2>
                     <p>{usuarioLog.email}</p>
                     <span>{ publicaciones &&publicaciones.length} publicaciones</span>
+                    
                 </div>
+                <button className={styles.cerrarSesion} onClick={cerrarSesion}>
+                    Cerrar sesión
+                </button>
             </div>
 
-            <button onClick={cerrarSesion}>
-                Cerrar sesión
-            </button>
         </section>
 
 <section className={styles.publicaciones}>
