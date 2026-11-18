@@ -1,18 +1,18 @@
 import React, { useEffect, useState } from 'react'
-import Image from 'react-bootstrap/Image';
-import ListGroup from 'react-bootstrap/ListGroup';
 import { useParams } from 'react-router-dom'
 import styles from "./DetallePost.module.css"
 import type { Post, Usuario,Comentario} from "../../types/post";
-import { Carousel } from 'react-bootstrap';
+import type { SubmitEvent } from "react";
+import useUsuario from "../../context/useUsuario";
 import CarruselImagenes from '../../components/CarruselImagenes/CarruselImagenes';
 import ListaComentarios from '../../components/ListaComentarios/ListaComentarios';
 import EtiquetasPost from '../../components/EtiquetaPost/EtiquetasPost';
 
 function DetallePost() {
   const { id } = useParams<{ id: string }>()
+  const { usuario } = useUsuario();
 
-  const [usuario, setUsuario] =useState<Usuario>()
+  const [autorPost, setAutorPost] =useState<Usuario>()
   const [postDetalle, setPostDetalle] = useState<Post>()
 
   const [usuarios, setUsuarios] = useState<Usuario[]>([]);
@@ -23,7 +23,7 @@ function DetallePost() {
         const response = await fetch(`http://localhost:3000/post/${id}`)
         const data = await response.json()
         setPostDetalle(data)
-        setUsuario( data.usuario)
+        setAutorPost( data.usuario)
         console.log("post : ",data)
    
      
@@ -48,31 +48,51 @@ function DetallePost() {
         await obtenerUsuariosComentarios(data)
       }
 
-      const agregarComentario = async (e: React.FormEvent) => {
+      const agregarComentario = async (e: SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (!nuevoComentario.trim()) return;
+    console.log("Usuario logueado:", usuario);
+    console.log("ID del usuario:", usuario?.id);
+    console.log("Comentario:", nuevoComentario);
 
-    const respuesta = await fetch(
-            `http://localhost:3000/comments/post/${id}`,
-            {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                  contenido: nuevoComentario,
-                    //a ver 
-                })
-            }
-        );
+    if (!nuevoComentario.trim()) {
+        console.log("El comentario está vacío");
+        return;
+    }
 
-        if (respuesta.ok) {
-            setNuevoComentario("");
-            await obtenerComentarios();
-        }
+    if (!usuario) {
+        console.log("No hay usuario logueado");
+        return;
+    }
+
+    const body = {
+        contenido: nuevoComentario,
+        userId: usuario.id
     };
 
+    console.log("Datos que se envían:", body);
+
+    const respuesta = await fetch(
+        `http://localhost:3000/comments/post/${id}`,
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(body)
+        }
+    );
+
+    const data = await respuesta.json();
+
+    console.log("Estado HTTP:", respuesta.status);
+    console.log("Respuesta del servidor:", data);
+
+    if (respuesta.ok) {
+        setNuevoComentario("");
+        await obtenerComentarios();
+    }
+};
     useEffect(() => {
         obtenerPost()
         obtenerComentarios()
@@ -88,7 +108,7 @@ function DetallePost() {
         {postDetalle && (
           <EtiquetasPost post={postDetalle} />
       )}
-        <h3>{usuario?.nickName}</h3>
+        <h3>{autorPost?.nickName}</h3>
         <p>{postDetalle?.descripcion}</p>
     </div>
   </div>
@@ -98,7 +118,7 @@ function DetallePost() {
           <ListaComentarios
           comentarios={comentarios}
           usuarios={usuarios}
-          usuario={usuario}
+          usuario={autorPost}
           />
       </div >
         <div className={styles.contenedor_agregarComentario}>
