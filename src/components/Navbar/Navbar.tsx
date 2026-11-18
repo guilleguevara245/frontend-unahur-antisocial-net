@@ -8,10 +8,12 @@ import Nav from "react-bootstrap/Nav";
 import styles from "./Navbar.module.css";
 import LoginModal from "../LoginModal/LoginModal";
 import SignUpModal from "../SignUpModal/SignUpModal";
+import useUsuario from "../../context/useUsuario";
 
 type ModalAbierto = "login" | "registro" | null;
 
 const NavigationBar = () => {
+  const { usuario, cerrarSesion } = useUsuario();
   const [expandido, setExpandido] = useState(false);
   const [modalAbierto, setModalAbierto] = useState<ModalAbierto>(null);
 
@@ -26,6 +28,11 @@ const NavigationBar = () => {
 
   const cerrarModal = () => {
     setModalAbierto(null);
+  };
+
+  const salir = () => {
+    cerrarMenu();
+    cerrarSesion();
   };
 
   const claseLink = ({ isActive }: { isActive: boolean }): string =>
@@ -65,21 +72,39 @@ const NavigationBar = () => {
               Inicio
             </NavLink>
 
-            <button
-              type="button"
-              onClick={() => abrirModal("login")}
-              className={`nav-link ${styles.link}`}
-            >
-              Iniciar sesión
-            </button>
+            {usuario ? (
+              <>
+                <span className={`navbar-text ${styles.usuario}`}>
+                  @{usuario.nickName}
+                </span>
 
-            <button
-              type="button"
-              onClick={() => abrirModal("registro")}
-              className={`${styles.botonRegistro} ${styles.link}`}
-            >
-              Registrarse
-            </button>
+                <button
+                  type="button"
+                  onClick={salir}
+                  className={`${styles.botonSesion} ${styles.link}`}
+                >
+                  Cerrar sesión
+                </button>
+              </>
+            ) : (
+              <>
+                <button
+                  type="button"
+                  onClick={() => abrirModal("login")}
+                  className={`nav-link ${styles.link}`}
+                >
+                  Iniciar sesión
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => abrirModal("registro")}
+                  className={`${styles.botonRegistro} ${styles.link}`}
+                >
+                  Registrarse
+                </button>
+              </>
+            )}
           </Nav>
         </Navbar.Collapse>
       </Container>
