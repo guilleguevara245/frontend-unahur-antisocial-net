@@ -18,6 +18,7 @@ function DetallePost() {
   const [usuarios, setUsuarios] = useState<Usuario[]>([]);
   const [comentarios,setComentarios] = useState<Comentario[]>([]);    
 
+
   const [nuevoComentario, setNuevoComentario] = useState("");
   const obtenerPost=  async ()=>{
         const response = await fetch(`http://localhost:3000/post/${id}`)
@@ -98,6 +99,7 @@ function DetallePost() {
         obtenerComentarios()
     }, [id])
   return (
+    <>
     <div className={styles.contenedor}>
     <div className={styles.contenedor_carrusel_descripcion}>
         {postDetalle && (
@@ -123,7 +125,7 @@ function DetallePost() {
       </div >
         <div className={styles.contenedor_agregarComentario}>
           <form onSubmit={agregarComentario}>
-              <textarea
+              <textarea disabled={!usuario}
                   value={nuevoComentario}
                   onChange={(e) => setNuevoComentario(e.target.value)}
                   placeholder="Escribe un comentario..."
@@ -133,7 +135,7 @@ function DetallePost() {
               <div className={styles.footer_comentario}>
                   <span>{nuevoComentario.length}/500</span>
 
-                  <button type="submit" disabled={!nuevoComentario.trim()}>
+                  <button type="submit" disabled={!nuevoComentario.trim() || !usuario} >
                       Comentar
                   </button>
               </div>
@@ -142,6 +144,7 @@ function DetallePost() {
   </div>
         
     </div>
+  </>
   )
 }
 
