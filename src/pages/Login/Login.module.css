@@ -1,0 +1,58 @@
+.pagina {
+  display: flex;
+  justify-content: center;
+  padding: 3rem 1rem;
+}
+
+.tarjeta {
+  width: 100%;
+  max-width: 420px;
+  padding: 2rem;
+  background-color: var(--as-superficie);
+  border-radius: 12px;
+  box-shadow: 0 4px 16px var(--as-sombra);
+}
+
+.titulo {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.botones {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Se usa `.boton.botonX` para ganarle en especificidad a `.btn` / `.btn-primary` de Bootstrap. */
+.boton {
+  width: 80%;
+}
+
+.boton.botonEntrar {
+  --bs-btn-color: #FFFFFF;
+  --bs-btn-bg: #5C6A69;
+  --bs-btn-border-color: #5C6A69;
+  --bs-btn-hover-color: #FFFFFF;
+  --bs-btn-hover-bg: #4D5958;
+  --bs-btn-hover-border-color: #4D5958;
+  --bs-btn-active-color: #FFFFFF;
+  --bs-btn-active-bg: #434E4D;
+  --bs-btn-active-border-color: #434E4D;
+  --bs-btn-focus-shadow-rgb: 92, 106, 105;
+}
+
+/* #3E504E al 60% */
+.boton.botonRegistro {
+  --bs-btn-color: #FFFFFF;
+  --bs-btn-bg: rgba(62, 80, 78, 0.6);
+  --bs-btn-border-color: transparent;
+  --bs-btn-hover-color: #FFFFFF;
+  --bs-btn-hover-bg: rgba(62, 80, 78, 0.75);
+  --bs-btn-hover-border-color: transparent;
+  --bs-btn-active-color: #FFFFFF;
+  --bs-btn-active-bg: rgba(62, 80, 78, 0.85);
+  --bs-btn-active-border-color: transparent;
+  --bs-btn-focus-shadow-rgb: 62, 80, 78;
+}

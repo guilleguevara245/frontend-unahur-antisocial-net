@@ -14,6 +14,9 @@ export interface Comentario {
   fecha: string;
   postId: number;
   userId: number;
+  user: {
+    nickName: string;
+  };
   visible: boolean;
 }
 
@@ -27,4 +30,11 @@ export interface Post {
   };
   imagenes: Imagen[];
   tags: Tag[];
+  comentariosVisibles:boolean
+}
+
+export interface Usuario{
+  id:number,
+  nickName:string,
+  email:string
 }
