@@ -50,6 +50,10 @@ const CrearPublicacion = () => {
     } catch (error) {
       console.error("Error al crear la publicación:", error);
     }
+
+    setDescripcion("");
+    setImagenes([]);
+    setTagsSeleccionados([]);
   };
   return (
     <Container className="mt-4">
