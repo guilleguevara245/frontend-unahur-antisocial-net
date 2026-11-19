@@ -101,8 +101,6 @@ const DetallePost = () => {
     }
   };
 
-<<<<<<< Updated upstream
-=======
   // Vuelve a la página anterior. Si se entró directo por la URL no hay página anterior en la app,
   // así que lleva al inicio.
   const volver = () => {
@@ -112,7 +110,6 @@ const DetallePost = () => {
       navigate(-1);
     }
   };
->>>>>>> Stashed changes
 
   if (cargando) {
     return (
@@ -133,25 +130,11 @@ const DetallePost = () => {
   }
 
   return (
-<<<<<<< Updated upstream
-    <div className={post && post.imagenes.length > 0
-    ? styles.contenedor
-    : styles.contenedor_sin_imagen}>
-      <div className={styles.contenedor_carrusel_descripcion}>
-        {post.imagenes.length > 0 && <CarruselImagenes post={post} />}
-
-        <div className={styles.content_descripcion}>
-          <EtiquetasPost post={post} />
-          <h3>@{post.usuario.nickName}</h3>
-          <p>{post.descripcion}</p>
-        </div>
-=======
     <>
       <div className={styles.barraVolver}>
         <button type="button" className={styles.volver} onClick={volver}>
           <span aria-hidden="true">‹</span> Volver
         </button>
->>>>>>> Stashed changes
       </div>
 
       <div className={styles.contenedor}>

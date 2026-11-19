@@ -167,7 +167,6 @@
     .contenedor{
         flex-direction: column;
     }
-<<<<<<< Updated upstream
     .contenedor_sin_imagen{
         flex-direction: column;
     }
@@ -176,11 +175,9 @@
 }
     .contenedor_comentarios{
         width: 90%;
-=======
-
+    }
     .barraVolver {
         width: 100%;
         padding: 0 15px;
->>>>>>> Stashed changes
     }
 }
