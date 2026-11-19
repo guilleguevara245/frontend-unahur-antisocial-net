@@ -13,7 +13,7 @@ import TagSelectorForm from "../../components/CrearPublicacionForm/TagSelectorFo
 const CrearPublicacion = () => {
   const { usuario } = useUsuario();
   const [descripcion, setDescripcion] = useState("");
-  const [imagenes, setImagenes] = useState<string[]>([]);
+  const [imagenes, setImagenes] = useState<File[]>([]);
   const [tagsSeleccionados, setTagsSeleccionados] = useState<number[]>([]);
 
   const handleSubmit = async (event: SubmitEvent<HTMLFormElement>) => {
@@ -24,12 +24,27 @@ const CrearPublicacion = () => {
     }
     try {
       const nuevoPost = await crearPost(descripcion, usuario.id);
+
+      console.log("Post Creado:", {
+        id: nuevoPost.post.id,
+        descripcion,
+        usuarioId: usuario.id,
+      });
       for (const tagId of tagsSeleccionados) {
         await agregarTagAPost(nuevoPost.post.id, tagId);
       }
-      for (const imagenUrl of imagenes) {
-        await crearPostImagen(nuevoPost.post.id, imagenUrl);
+      console.log(
+        `Tags asociados al post ${nuevoPost.post.id}:`,
+        tagsSeleccionados.length > 0 ? tagsSeleccionados : "Sin tags",
+      );
+      for (const imagen of imagenes) {
+        await crearPostImagen(nuevoPost.post.id, imagen);
       }
+      console.log(
+        `Imagenes asociados al post ${nuevoPost.post.id}:`,
+        imagenes.length > 0 ? imagenes : "Sin imagenes",
+      );
+
       console.log("Publicación creada con éxito", nuevoPost);
     } catch (error) {
       console.error("Error al crear la publicación:", error);

@@ -74,25 +74,17 @@ export async function agregarTagAPost(
   return await respuesta.json();
 }
 
-export async function crearPostImagen(
-  postId: number,
-  urlImage: string,
-): Promise<void> {
-  console.log({
-    postId,
-    urlImage,
-  });
-  const respuesta = await fetch(`${API_URL}/postImages`, {
+export const crearPostImagen = async (postId: number, imagen: File) => {
+  const formData = new FormData();
+  formData.append("postId", String(postId));
+  formData.append("imagen", imagen);
+  const res = await fetch(`${API_URL}/postImages`, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ postId, urlImage }),
+    body: formData,
   });
-  if (!respuesta.ok) {
-    const error = await respuesta.text();
-
-    console.error(error);
-    throw new Error("Error al crear la imagen: " + respuesta.status);
+  const data = await res.json();
+  if (!res.ok) {
+    throw new Error(data.errores ?? data.message ?? "Error al subir la imagen");
   }
-}
+  return data;
+};
