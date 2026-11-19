@@ -23,6 +23,7 @@
 
 .contenido_comentario {
     display: flex;
+    
     flex-direction: column;
     min-width: 0;
 }

@@ -1,21 +1,21 @@
 import Image from 'react-bootstrap/Image'
 import ListGroup from 'react-bootstrap/ListGroup'
-import type { Usuario, Comentario } from '../../types/post'
+import type { Comentario } from '../../types/post'
 import styles from './ListaComentarios.module.css'
 
 interface ListaComentariosProps {
     comentarios: Comentario[]
-    usuarios: Usuario[]
-    usuario: Usuario | undefined
+    // nickName de cada usuario, por id (el backend solo manda el userId del comentario)
+    nickNames: Record<number, string>
+    // id del autor del post, para marcar sus comentarios
+    autorId: number
 }
 
-function ListaComentarios({ comentarios, usuarios, usuario }: ListaComentariosProps) {
+const ListaComentarios = ({ comentarios, nickNames, autorId }: ListaComentariosProps) => {
     return (
         <ListGroup variant="flush">
             {comentarios.map((comentario) => {
-                const usuarioComent = usuarios.find(
-                    (u) => u.id === comentario.userId
-                )
+                const nickName = nickNames[comentario.userId] ?? "Usuario"
 
                 return (
                     <ListGroup.Item
@@ -24,18 +24,17 @@ function ListaComentarios({ comentarios, usuarios, usuario }: ListaComentariosPr
                     >
                         <Image
                             src="/img/perfil.jpg"
+                            alt={`Foto de perfil de ${nickName}`}
                             className={styles.imagen_usuario}
                             roundedCircle
                         />
 
                         <div className={styles.contenido_comentario}>
                             <strong>
-                                {usuarioComent?.nickName ?? "Usuario"}
-                                <b className={styles.autor}>
-                                    {usuarioComent?.nickName === usuario?.nickName
-                                        ? " autor"
-                                        : ""}
-                                </b>
+                                {nickName}
+                                {comentario.userId === autorId && (
+                                    <b className={styles.autor}> autor</b>
+                                )}
                             </strong>
 
                             <p>{comentario.contenido}</p>

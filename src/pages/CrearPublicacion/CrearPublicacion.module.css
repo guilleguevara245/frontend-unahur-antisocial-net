@@ -1,0 +1,37 @@
+.pagina {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+.tarjeta {
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px var(--as-sombra);
+}
+
+.tarjeta :global(.card-body) {
+  padding: 2rem;
+}
+
+.titulo {
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Mismo estilo que los botones de las tarjetas de posts. */
+.boton {
+  --bs-btn-bg: var(--as-boton);
+  --bs-btn-border-color: var(--as-boton);
+  --bs-btn-color: var(--as-boton-texto);
+  --bs-btn-hover-bg: var(--as-boton-hover);
+  --bs-btn-hover-border-color: var(--as-boton-hover);
+  --bs-btn-hover-color: var(--as-boton-texto);
+  --bs-btn-active-bg: var(--as-boton-hover);
+  --bs-btn-active-border-color: var(--as-boton-hover);
+  --bs-btn-active-color: var(--as-boton-texto);
+  --bs-btn-disabled-bg: var(--as-boton);
+  --bs-btn-disabled-border-color: var(--as-boton);
+  --bs-btn-disabled-color: var(--as-boton-texto);
+  width: 100%;
+}

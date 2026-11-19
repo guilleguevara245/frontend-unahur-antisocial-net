@@ -30,12 +30,9 @@ const Login = () => {
     setCargando(true);
     try {
       const usuario = await obtenerUsuarioPorNickName(nickNameLimpio);
-      if (!usuario) {
-        setError('No existe un usuario con ese nickName');
-        return;
-      }
-      if (contrasena !== CONTRASENA_VALIDA) {
-        setError('Contraseña incorrecta');
+      // Un único mensaje para los dos casos: así no se revela si el nickName existe.
+      if (!usuario || contrasena !== CONTRASENA_VALIDA) {
+        setError('Usuario o contraseña incorrectos');
         return;
       }
       // Al guardar el usuario, RutaPublica redirige a la página que se quería ver (o al inicio).
@@ -68,16 +65,16 @@ const Login = () => {
           </Form.Group>
 
           <Form.Group className="mb-3" controlId="loginPassword">
-            <Form.Label>contraseña</Form.Label>
+            <Form.Label>Contraseña</Form.Label>
             <Form.Control
               type="password"
-              placeholder="Password"
+              placeholder="Contraseña"
               value={contrasena}
               onChange={(evento) => setContrasena(evento.currentTarget.value)}
               required
             />
           </Form.Group>
-          <div className={`mb-3 ${Style.botones}`}>
+          <div className={Style.botones}>
             <Button type="submit" disabled={cargando} className={`${Style.boton} ${Style.botonEntrar}`}>
               {cargando ? 'Verificando...' : 'Entrar'}
             </Button>
@@ -85,13 +82,10 @@ const Login = () => {
               Registrarse
             </Link>
           </div>
-          <Form.Text className="text-muted">
-            Si te olvidaste la contraseña cagate
-          </Form.Text>
         </Form>
       </section>
     </main>
   );
-}
+};
 
 export default Login;
