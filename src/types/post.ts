@@ -39,5 +39,5 @@ export interface Usuario {
 
 export interface RespuestaCrearPost {
   message: string;
-  postId: number;
+  post: Post;
 }

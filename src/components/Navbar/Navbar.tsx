@@ -51,13 +51,15 @@ const NavigationBar = () => {
           <Nav className={`ms-auto ${styles.menu}`}>
             {usuario ? (
               <>
+                <NavLink to="/" end onClick={cerrarMenu} className={claseLink}>
+                  Inicio
+                </NavLink>
                 <NavLink
-                  to="/"
-                  end
+                  to="/create-post"
                   onClick={cerrarMenu}
                   className={claseLink}
                 >
-                  Inicio
+                  Crear publicación
                 </NavLink>
 
                 <NavLink
@@ -82,11 +84,7 @@ const NavigationBar = () => {
               </>
             ) : (
               <>
-                <NavLink
-                  to="/login"
-                  onClick={cerrarMenu}
-                  className={claseLink}
-                >
+                <NavLink to="/login" onClick={cerrarMenu} className={claseLink}>
                   Iniciar sesión
                 </NavLink>
 

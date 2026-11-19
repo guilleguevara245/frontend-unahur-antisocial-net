@@ -1,5 +1,5 @@
 import { API_URL } from "./config";
-import type { Comentario, Post } from "../types/post";
+import type { Comentario, Post, Tag, RespuestaCrearPost } from "../types/post";
 
 export async function obtenerPosts(): Promise<Post[]> {
   const respuesta = await fetch(`${API_URL}/post`);
@@ -36,7 +36,7 @@ export function urlImagen(url: string): string {
 export async function crearPost(
   descripcion: string,
   userId: number,
-): Promise<number> {
+): Promise<RespuestaCrearPost> {
   const respuesta = await fetch(`${API_URL}/post`, {
     method: "POST",
     headers: {
@@ -52,7 +52,7 @@ export async function crearPost(
   return await respuesta.json();
 }
 
-export async function obtenerTags(): Promise<string[]> {
+export async function obtenerTags(): Promise<Tag[]> {
   const respuesta = await fetch(`${API_URL}/tags`);
   if (!respuesta.ok) {
     throw new Error("Error al obtener los tags: " + respuesta.status);
@@ -72,4 +72,27 @@ export async function agregarTagAPost(
     throw new Error("Error al agregar el tag al post: " + respuesta.status);
   }
   return await respuesta.json();
+}
+
+export async function crearPostImagen(
+  postId: number,
+  urlImage: string,
+): Promise<void> {
+  console.log({
+    postId,
+    urlImage,
+  });
+  const respuesta = await fetch(`${API_URL}/postImages`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ postId, urlImage }),
+  });
+  if (!respuesta.ok) {
+    const error = await respuesta.text();
+
+    console.error(error);
+    throw new Error("Error al crear la imagen: " + respuesta.status);
+  }
 }
