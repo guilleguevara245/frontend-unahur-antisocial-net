@@ -25,9 +25,7 @@ export interface Post {
   userId: number;
   descripcion: string;
   createdAt: string;
-  usuario: {
-    nickName: string;
-  };
+  usuario:Usuario
   imagenes: Imagen[];
   tags: Tag[];
   comentariosVisibles:boolean
