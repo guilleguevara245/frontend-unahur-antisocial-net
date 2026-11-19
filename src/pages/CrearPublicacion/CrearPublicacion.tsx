@@ -1,4 +1,3 @@
-import { useState } from "react";
 import CrearPublicacionForm from "../../components/CrearPublicacionForm/CrearPublicacionForm";
 
 const CrearPublicacion = () => {

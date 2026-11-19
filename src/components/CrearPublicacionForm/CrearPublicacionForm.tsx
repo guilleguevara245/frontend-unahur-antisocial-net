@@ -1,44 +1,97 @@
-import React, { useState } from "react";
-import type { SubmitEvent } from "react";
+import { useState, type SubmitEvent } from "react";
+import useUsuario from "../../context/useUsuario";
+import { crearPost, agregarTagAPost, obtenerTags } from "../../api/posts";
+// import type { Tag } from "../../types";
 
-interface CrearPublicacionFormProps {}
+import Container from "react-bootstrap/Container";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
+import { Button, Card, Form } from "react-bootstrap";
 
 function CrearPublicacionForm() {
-  const [descripcion, setDescricion] = useState("");
-
+  const [descripcion, setDescripcion] = useState("");
+  const { usuario } = useUsuario();
   const [imagenes, setImagenes] = useState<string[]>([""]);
 
-  const agreagarImagen = () => {
-    setImagenes([...imagenes, ""]);
+  const agregarImagen = () => {
+    setImagenes;
   };
 
-  const handleImagenChange = (index: number, value: string) => {
+  const handleSubmit = async (event: SubmitEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    if (!usuario) {
+      alert("Debes inicair sesion");
+      return;
+    }
+    try {
+      (await crearPost(descripcion, usuario.id),
+        alert("Publicación creada con éxito"));
+    } catch (error) {
+      console.error("Error al crear la publicación:", error);
+    }
+  };
+
+  const handleAgregarImagen = (index: number, value: string) => {
     const nuevasImagenes = [...imagenes];
     nuevasImagenes[index] = value;
-
     setImagenes(nuevasImagenes);
   };
 
-  const handleSubmit = (event: SubmitEvent<HTMLFormElement>) => {
-    event.preventDefault();
-
-    console.log({ descripcion, imagenes });
-  };
   return (
-    <form onSubmit={handleSubmit}>
-      <div>
-        <label htmlFor="descripcion">Descripción:</label>
-        <textarea
-          id="descripcion"
-          value={descripcion}
-          onChange={(e) => setDescricion(e.target.value)}
-          required
-        />
-      </div>
+    <Container className="mt-4">
+      <Card className="shadow">
+        <Card.Body>
+          <Card.Title className="mb-4">Crear publicación</Card.Title>
 
-      <h3>Imágenes:</h3>
-      <button>Agregar Imagen</button>
-    </form>
+          <Form onSubmit={handleSubmit}>
+            <Form.Group className="mb-4">
+              <Form.Label>Descripción</Form.Label>
+
+              <Form.Control
+                as="textarea"
+                rows={4}
+                value={descripcion}
+                onChange={(e) => setDescripcion(e.target.value)}
+                placeholder="¿Qué estás pensando?"
+                required
+              />
+            </Form.Group>
+
+            <Form.Group className="mb-4">
+              <Form.Label>Imágenes</Form.Label>
+
+              {imagenes.map((imagen, index) => (
+                <Row key={index} className="mb-2">
+                  <Col>
+                    <Form.Control
+                      type="text"
+                      placeholder="https://imagen.com/foto.jpg"
+                      value={imagen}
+                      onChange={(e) =>
+                        handleAgregarImagen(index, e.target.value)
+                      }
+                    />
+                  </Col>
+                </Row>
+              ))}
+
+              <Button
+                variant="outline-secondary"
+                type="button"
+                onClick={agregarImagen}
+              >
+                Agregar imagen
+              </Button>
+            </Form.Group>
+
+            <Button type="submit" variant="primary">
+              Publicar
+            </Button>
+          </Form>
+        </Card.Body>
+      </Card>
+    </Container>
   );
 }
 

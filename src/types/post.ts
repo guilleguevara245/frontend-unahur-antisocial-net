@@ -25,14 +25,19 @@ export interface Post {
   userId: number;
   descripcion: string;
   createdAt: string;
-  usuario:Usuario
+  usuario: Usuario;
   imagenes: Imagen[];
   tags: Tag[];
-  comentariosVisibles:boolean
+  comentariosVisibles: boolean;
 }
 
-export interface Usuario{
-  id:number,
-  nickName:string,
-  email:string
+export interface Usuario {
+  id: number;
+  nickName: string;
+  email: string;
+}
+
+export interface RespuestaCrearPost {
+  message: string;
+  postId: number;
 }
