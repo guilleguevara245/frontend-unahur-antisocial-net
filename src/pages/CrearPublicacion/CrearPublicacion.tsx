@@ -9,22 +9,32 @@ import { CardBody } from "react-bootstrap";
 import DescripcionForm from "../../components/CrearPublicacionForm/DescripcionForm";
 import ImagenesForm from "../../components/CrearPublicacionForm/ImagenesForm";
 import TagSelectorForm from "../../components/CrearPublicacionForm/TagSelectorForm";
+import {
+  validarPublicacion,
+  type ErroresPublicacion,
+} from "../../components/CrearPublicacionForm/validacionesForm";
 
 const CrearPublicacion = () => {
   const { usuario } = useUsuario();
   const [descripcion, setDescripcion] = useState("");
   const [imagenes, setImagenes] = useState<File[]>([]);
   const [tagsSeleccionados, setTagsSeleccionados] = useState<number[]>([]);
-
+  const [errors, setErrors] = useState<ErroresPublicacion>({});
   const handleSubmit = async (event: SubmitEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!usuario) {
       alert("Debes iniciar sesión");
       return;
     }
+    const newErrors = validarPublicacion({ descripcion, imagenes });
+    setErrors(newErrors);
+    console.log("Errores:", newErrors);
+    if (Object.keys(newErrors).length > 0) {
+      console.log("Complete los campos faltantes");
+      return;
+    }
     try {
       const nuevoPost = await crearPost(descripcion, usuario.id);
-
       console.log("Post Creado:", {
         id: nuevoPost.post.id,
         descripcion,
@@ -33,18 +43,9 @@ const CrearPublicacion = () => {
       for (const tagId of tagsSeleccionados) {
         await agregarTagAPost(nuevoPost.post.id, tagId);
       }
-      console.log(
-        `Tags asociados al post ${nuevoPost.post.id}:`,
-        tagsSeleccionados.length > 0 ? tagsSeleccionados : "Sin tags",
-      );
       for (const imagen of imagenes) {
         await crearPostImagen(nuevoPost.post.id, imagen);
       }
-      console.log(
-        `Imagenes asociados al post ${nuevoPost.post.id}:`,
-        imagenes.length > 0 ? imagenes : "Sin imagenes",
-      );
-
       console.log("Publicación creada con éxito", nuevoPost);
     } catch (error) {
       console.error("Error al crear la publicación:", error);
@@ -55,9 +56,17 @@ const CrearPublicacion = () => {
       <Card className="shadow">
         <CardBody>
           <Card.Title className="mb-4">Crear Publicacion</Card.Title>
-          <Form onSubmit={handleSubmit}>
-            <DescripcionForm value={descripcion} onChange={setDescripcion} />
-            <ImagenesForm imagenes={imagenes} onChange={setImagenes} />
+          <Form onSubmit={handleSubmit} noValidate>
+            <DescripcionForm
+              value={descripcion}
+              onChange={setDescripcion}
+              error={errors.descripcion}
+            />
+            <ImagenesForm
+              imagenes={imagenes}
+              onChange={setImagenes}
+              error={errors.imagenes}
+            />
             <TagSelectorForm
               seleccionados={tagsSeleccionados}
               onChange={setTagsSeleccionados}
@@ -73,8 +82,3 @@ const CrearPublicacion = () => {
 };
 
 export default CrearPublicacion;
-// {/* <main>
-//       <h1>Crear Publicacion</h1>
-//       {/* <CrearPublicacionForm /> */}
-//       <DescripcionForm />
-//     </main> */}

@@ -1,25 +1,30 @@
 import { use, useState } from "react";
 import { Button, Form } from "react-bootstrap";
+import { validarArchivoImagen } from "./validacionesForm";
 
 interface ImagenesInputProps {
   imagenes: File[];
   onChange: (imagenes: File[]) => void;
+  error?: string;
 }
 
-const FORMATOS_PERMITIDOS = ["image/jpeg", "image/png", "image/webp"];
-const TAMANIO_MAXIMO_MB = 5;
-
-function ImagenesForm({ imagenes, onChange }: ImagenesInputProps) {
+function ImagenesForm({ imagenes, onChange, error }: ImagenesInputProps) {
   const [archivoActual, setArchivoActual] = useState<File | null>(null);
   const [inputKey, setInputKey] = useState(0);
+  const [errorLocal, setErrorLocal] = useState("");
+
+  const mensajeError = errorLocal || error;
 
   const agregarImagen = () => {
     if (!archivoActual) {
-      alert("Por favor, selecciona una imagen antes de agregar otra .");
+      setErrorLocal("Selecciona una imagen antes de agregarla");
       return;
     }
     onChange([...imagenes, archivoActual]);
     setArchivoActual(null);
+    setInputKey((k) => k + 1);
+    setErrorLocal("");
+    console.log("Imagen agregada", archivoActual.name);
   };
 
   const eliminarImagen = (index: number) => {
@@ -31,22 +36,17 @@ function ImagenesForm({ imagenes, onChange }: ImagenesInputProps) {
     const archivo = e.target.files?.[0] ?? null;
     if (!archivo) {
       setArchivoActual(null);
+      setErrorLocal("");
       return;
     }
-
-    if (!FORMATOS_PERMITIDOS.includes(archivo.type)) {
-      alert("La imagen debe ser jpg,png o webp");
+    const mensaje = validarArchivoImagen(archivo);
+    if (mensaje) {
+      setErrorLocal(mensaje);
       setArchivoActual(null);
       setInputKey((k) => k + 1);
       return;
     }
-
-    if (archivo.size > TAMANIO_MAXIMO_MB * 1024 * 1024) {
-      alert(`La imagen no puede superar los ${TAMANIO_MAXIMO_MB}`);
-      setArchivoActual(null);
-      setInputKey((k) => k + 1);
-      return;
-    }
+    setErrorLocal("");
     setArchivoActual(archivo);
   };
 
@@ -56,18 +56,20 @@ function ImagenesForm({ imagenes, onChange }: ImagenesInputProps) {
       <Form.Control
         key={inputKey}
         type="file"
-        accept="image/jpeg, image/png ,image/webp"
+        accept="image/jpeg,image/png,image/webp"
+        className={mensajeError ? "is-invalid" : ""}
         onChange={handleSubmit}
       />
-
-      {archivoActual && (
+      {mensajeError && (
+        <div className="invalid-feedback d-block">{mensajeError}</div>
+      )}
+      {archivoActual && !errorLocal && (
         <div className="mt-2 text-muted">
           <small>
             Seleccionada: <code>{archivoActual.name}</code>
           </small>
         </div>
       )}
-
       <Button
         className="mt-2"
         variant="outline-secondary"
@@ -76,7 +78,6 @@ function ImagenesForm({ imagenes, onChange }: ImagenesInputProps) {
       >
         Agregar imagen
       </Button>
-
       <div className="mt-3">
         {imagenes.map((file, index) => (
           <div
