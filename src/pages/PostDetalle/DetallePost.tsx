@@ -97,9 +97,9 @@ const obtenerListaDeComentarios = async () => {
     }, [id])
   return (
     <>
-    <div className={styles.contenedor}>
+    <div className={postDetalle && postDetalle.imagenes.length >0 ? styles.contenedor :styles.contenedor_sin_imagen}>
     <div className={styles.contenedor_carrusel_descripcion}>
-        {postDetalle && (
+        {postDetalle && postDetalle.imagenes.length>0 && (
           <CarruselImagenes post={postDetalle}></CarruselImagenes>
 
 )}
@@ -112,7 +112,7 @@ const obtenerListaDeComentarios = async () => {
         <p>{postDetalle?.descripcion}</p>
     </div>
   </div>
-  <div >
+  <div className={styles.contenedor_main_comentario}>
       <h5>Comentarios</h5>
         <div className={styles.conenedor_comentario}>
           <ListaComentarios
@@ -120,7 +120,7 @@ const obtenerListaDeComentarios = async () => {
           usuarios={usuarios}
           usuario={autorPost}
           />
-      </div >
+    </div >
         <div className={styles.contenedor_agregarComentario}>
         {alerta.trim() && <Alert variant="danger">
              {alerta}
