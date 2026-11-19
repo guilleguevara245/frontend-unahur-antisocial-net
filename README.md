@@ -24,6 +24,7 @@ AntiSocial Net es una aplicación de red social simulada, hecha como trabajo pr�
 
 El frontend consume la API REST del backend del grupo:
 
+- Repositorio del backend: [Backend-AntiSocialUnahur](https://github.com/TomasCardenas932/Backend-AntiSocialUnahur)
 - URL de la API: `http://localhost:3000`
 - Documentación (Swagger): `http://localhost:3000/api-docs`
 
