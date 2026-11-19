@@ -4,32 +4,18 @@ import Navbar from "react-bootstrap/Navbar";
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import styles from "./Navbar.module.css";
-
-import LoginModal from "../LoginModal/LoginModal";
-import SignUpModal from "../SignUpModal/SignUpModal";
 import useUsuario from "../../context/useUsuario";
-
-type ModalAbierto = "login" | "registro" | null;
 
 const NavigationBar = () => {
   const { usuario, cerrarSesion } = useUsuario();
 
   const [expandido, setExpandido] = useState(false);
-  const [modalAbierto, setModalAbierto] = useState<ModalAbierto>(null);
 
   const cerrarMenu = () => {
     setExpandido(false);
   };
 
-  const abrirModal = (modal: ModalAbierto) => {
-    cerrarMenu();
-    setModalAbierto(modal);
-  };
-
-  const cerrarModal = () => {
-    setModalAbierto(null);
-  };
-
+  // Al borrar el usuario, RutaProtegida redirige al login.
   const salir = () => {
     cerrarMenu();
     cerrarSesion();
@@ -63,25 +49,25 @@ const NavigationBar = () => {
 
         <Navbar.Collapse id="menu-principal">
           <Nav className={`ms-auto ${styles.menu}`}>
-            <NavLink
-              to="/"
-              end
-              onClick={cerrarMenu}
-              className={claseLink}
-            >
-              Inicio
-            </NavLink>
-
-            <NavLink
-              to="/perfil"
-              onClick={cerrarMenu}
-              className={claseLink}
-            >
-              Mi perfil
-            </NavLink>
-
             {usuario ? (
               <>
+                <NavLink
+                  to="/"
+                  end
+                  onClick={cerrarMenu}
+                  className={claseLink}
+                >
+                  Inicio
+                </NavLink>
+
+                <NavLink
+                  to="/perfil"
+                  onClick={cerrarMenu}
+                  className={claseLink}
+                >
+                  Mi perfil
+                </NavLink>
+
                 <span className={`navbar-text ${styles.usuario}`}>
                   @{usuario.nickName}
                 </span>
@@ -96,37 +82,26 @@ const NavigationBar = () => {
               </>
             ) : (
               <>
-                <button
-                  type="button"
-                  onClick={() => abrirModal("login")}
-                  className={`nav-link ${styles.link}`}
+                <NavLink
+                  to="/login"
+                  onClick={cerrarMenu}
+                  className={claseLink}
                 >
                   Iniciar sesión
-                </button>
+                </NavLink>
 
-                <button
-                  type="button"
-                  onClick={() => abrirModal("registro")}
+                <NavLink
+                  to="/registro"
+                  onClick={cerrarMenu}
                   className={`${styles.botonRegistro} ${styles.link}`}
                 >
                   Registrarse
-                </button>
+                </NavLink>
               </>
             )}
           </Nav>
         </Navbar.Collapse>
       </Container>
-
-      <LoginModal
-        show={modalAbierto === "login"}
-        onHide={cerrarModal}
-        onIrARegistro={() => setModalAbierto("registro")}
-      />
-
-      <SignUpModal
-        show={modalAbierto === "registro"}
-        onHide={cerrarModal}
-      />
     </Navbar>
   );
 };
