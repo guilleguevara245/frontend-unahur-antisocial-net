@@ -1,6 +1,14 @@
 # AntiSocial Net
 
-AntiSocial Net es una aplicacion de red social simulada. Esta app nos permite postear, seguir a otros usuarios y comentar las publicaciones de otros usuarios
+AntiSocial Net es una aplicación de red social simulada, hecha como trabajo práctico de la UnaHur. Permite registrarse, iniciar sesión, ver el feed de publicaciones (con filtro por etiquetas), entrar al detalle de cada publicación, comentar y crear publicaciones con imágenes y etiquetas.
+
+## Funcionalidades
+
+- **Inicio** (`/`): feed con todas las publicaciones, filtro por etiquetas, paginación y publicaciones destacadas.
+- **Detalle de publicación** (`/post/:id`): imágenes, etiquetas, descripción y comentarios. Con sesión iniciada se puede comentar.
+- **Iniciar sesión** (`/login`) y **Registrarse** (`/registro`). La contraseña es `123456` para todos los usuarios.
+- **Mi perfil** (`/perfil`, requiere sesión): datos del usuario y sus publicaciones.
+- **Crear publicación** (`/create-post`, requiere sesión): descripción, imágenes y etiquetas.
 
 ## Tecnologías utilizadas
 
@@ -12,7 +20,50 @@ AntiSocial Net es una aplicacion de red social simulada. Esta app nos permite po
 - Google Fonts (Cormorant Garamond y Jost)
 - OxLint
 
-## Instalación y ejecución
+## API
+
+El frontend consume la API REST del backend del grupo:
+
+- Repositorio del backend: <https://gitea.unahur.edu.ar/Estrategia-de-persistencia-C2-2026/ejercicio-56-grupo-28>
+- URL de la API: `http://localhost:3000`
+- Documentación (Swagger): `http://localhost:3000/api-docs`
+
+La URL de la API está en [src/api/config.ts](src/api/config.ts). Para usar otra, se puede crear un archivo `.env` (ver [.env.example](.env.example)) con:
+
+```
+VITE_API_URL=http://localhost:3000
+```
+
+### Levantar el backend
+
+El backend tiene que estar corriendo antes de abrir el frontend.
+
+1. Clonar el repositorio del backend y entrar a la carpeta:
+
+   ```bash
+   git clone https://gitea.unahur.edu.ar/Estrategia-de-persistencia-C2-2026/ejercicio-56-grupo-28.git
+   cd ejercicio-56-grupo-28
+   ```
+
+2. Instalar las dependencias:
+
+   ```bash
+   npm i
+   ```
+
+3. Crear las tablas de la base de datos:
+
+   ```bash
+   npm run db:migrate
+   ```
+
+4. Iniciar el servidor (queda escuchando en el puerto 3000):
+
+   ```bash
+   npm run dev
+   ```
+
+## Instalación y ejecución del frontend
 
 1. Clonar el repositorio:
 
@@ -38,7 +89,7 @@ AntiSocial Net es una aplicacion de red social simulada. Esta app nos permite po
    npm run dev
    ```
 
-5. Abrir en el navegador la dirección que muestra la terminal (por lo general `http://localhost:5173`).
+5. Abrir en el navegador `http://localhost:5173`. Tiene que ser ese puerto, porque el backend solo acepta pedidos (CORS) desde `http://localhost:5173`.
 
 ## Integrantes
 

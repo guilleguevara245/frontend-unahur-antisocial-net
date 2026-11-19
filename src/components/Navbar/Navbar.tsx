@@ -16,7 +16,7 @@ const NavigationBar = () => {
     setExpandido(false);
   };
 
-  // Al borrar el usuario, RutaProtegida redirige al login.
+  // Si se está en una página protegida (perfil, crear publicación), RutaProtegida redirige al login.
   const salir = () => {
     cerrarMenu();
     cerrarSesion();
@@ -50,11 +50,12 @@ const NavigationBar = () => {
 
         <Navbar.Collapse id="menu-principal">
           <Nav className={`ms-auto ${styles.menu}`}>
+            <NavLink to="/" end onClick={cerrarMenu} className={claseLink}>
+              Inicio
+            </NavLink>
+
             {usuario ? (
               <>
-                <NavLink to="/" end onClick={cerrarMenu} className={claseLink}>
-                  Inicio
-                </NavLink>
                 <NavLink
                   to="/create-post"
                   onClick={cerrarMenu}

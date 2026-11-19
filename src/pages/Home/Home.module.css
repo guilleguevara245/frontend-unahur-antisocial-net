@@ -43,3 +43,64 @@
 .item p {
   color: var(--as-texto-suave);
 }
+
+.botonPortada {
+  border-radius: 6px;
+  padding: 0.5rem 1.5rem;
+}
+
+.feed {
+  background-color: var(--as-superficie-suave);
+  scroll-margin-top: 1rem;
+}
+
+.textoSuave {
+  color: var(--as-texto-suave);
+}
+
+.spinner {
+  color: var(--as-boton);
+}
+
+.filtro {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+}
+
+.filtroBoton {
+  padding: 0.3rem 0.9rem;
+  border: 1px solid var(--as-borde);
+  border-radius: 999px;
+  background-color: transparent;
+  color: var(--as-texto);
+  font-size: 0.9rem;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.filtroBoton:hover {
+  background-color: rgba(47, 59, 59, 0.08);
+}
+
+.filtroActivo,
+.filtroActivo:hover {
+  background-color: var(--as-boton);
+  color: var(--as-boton-texto);
+}
+
+.paginacion {
+  --bs-pagination-color: var(--as-texto);
+  --bs-pagination-bg: var(--as-superficie);
+  --bs-pagination-border-color: rgba(47, 59, 59, 0.25);
+  --bs-pagination-hover-color: var(--as-texto);
+  --bs-pagination-hover-bg: var(--as-fondo);
+  --bs-pagination-focus-color: var(--as-texto);
+  --bs-pagination-focus-box-shadow: 0 0 0 0.2rem rgba(47, 59, 59, 0.25);
+  --bs-pagination-active-color: var(--as-boton-texto);
+  --bs-pagination-active-bg: var(--as-boton);
+  --bs-pagination-active-border-color: var(--as-boton);
+  --bs-pagination-disabled-color: var(--as-texto-suave);
+  --bs-pagination-disabled-bg: var(--as-superficie-suave);
+}

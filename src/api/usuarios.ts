@@ -12,12 +12,10 @@ export const obtenerUsuarioPorNickName = async (nickName: string): Promise<Usuar
   return await respuesta.json();
 };
 
-export const obtenerUsuarios = async (): Promise<Usuario[] > => {
-  
-  const respuesta = await fetch("http://localhost:3000/users/");
-
+export const obtenerUsuarios = async (): Promise<Usuario[]> => {
+  const respuesta = await fetch(`${API_URL}/users`);
   if (!respuesta.ok) {
-    throw new Error("Error al obtener el usuario: " + respuesta.status);
+    throw new Error("Error al obtener los usuarios: " + respuesta.status);
   }
   return await respuesta.json();
 };

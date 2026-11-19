@@ -32,6 +32,26 @@
 }
 
 
+/* columna de comentarios */
+.contenedor_comentarios {
+    flex: 0 1 40%;
+    min-width: 0;
+    padding: 0 15px;
+}
+
+.sinComentarios {
+    margin: 0;
+    color: var(--as-texto-suave);
+}
+
+/* carga fallida o post inexistente */
+.estado {
+    max-width: 600px;
+    margin: 3rem auto;
+    padding: 0 1rem;
+    text-align: center;
+}
+
 /*descripcion post*/
 
 .content_descripcion {
