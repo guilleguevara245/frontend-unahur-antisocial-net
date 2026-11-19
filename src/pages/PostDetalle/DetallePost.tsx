@@ -7,71 +7,71 @@ import useUsuario from "../../context/useUsuario";
 import CarruselImagenes from '../../components/CarruselImagenes/CarruselImagenes';
 import ListaComentarios from '../../components/ListaComentarios/ListaComentarios';
 import EtiquetasPost from '../../components/EtiquetaPost/EtiquetasPost';
-
+import { obtenerPost } from '../../api/posts';
+import { obtenerUsuarios } from '../../api/usuarios';
+import { obtenerComentarios } from '../../api/comentarios';
+import Alert from 'react-bootstrap/Alert';
 function DetallePost() {
   const { id } = useParams<{ id: string }>()
   const { usuario } = useUsuario();
 
-  const [autorPost, setAutorPost] =useState<Usuario>()
+  const [autorPost, setAutorPost] = useState< Usuario>()
   const [postDetalle, setPostDetalle] = useState<Post>()
 
   const [usuarios, setUsuarios] = useState<Usuario[]>([]);
   const [comentarios,setComentarios] = useState<Comentario[]>([]);    
 
 
+  const [alerta, setAlerta] =useState("")
+
+
   const [nuevoComentario, setNuevoComentario] = useState("");
-  const obtenerPost=  async ()=>{
-        const response = await fetch(`http://localhost:3000/post/${id}`)
-        const data = await response.json()
+  const obtenerDetallesPost=  async ()=>{
+      if (id) {
+        const data:Post = await obtenerPost(id);
+        setPostDetalle(data);
         setPostDetalle(data)
         setAutorPost( data.usuario)
         console.log("post : ",data)
+      }
+       
    
      
-        console.log(data.usuario.nickName)
       }
-      const obtenerUsuariosComentarios = async (comentariosObtenidos: Comentario[]) => {
-        const respuesta = await fetch("http://localhost:3000/users/");
-        const datos:Usuario[] = await respuesta.json();
-        
-        
-        const idsUsuarios = comentariosObtenidos.map(comentario => comentario.userId);
-        const usuariosFiltrados = datos.filter(usuario =>
-          idsUsuarios.includes(usuario.id)
-        );
-        setUsuarios(usuariosFiltrados);
-    };
-      const obtenerComentarios =async()=>{
-        const response = await fetch(`http://localhost:3000/comments/post/${id}`)
-        const data = await response.json()
-        console.log(data);
-        setComentarios(data)
-        await obtenerUsuariosComentarios(data)
-      }
+const obtenerListaDeComentarios = async () => {
+    if (!id) return;
 
-      const agregarComentario = async (e: SubmitEvent<HTMLFormElement>) => {
+    const comentariosObtenidos = await obtenerComentarios(id);
+    
+    const datos: Usuario[] = await obtenerUsuarios()
+      
+    const idsUsuarios = comentariosObtenidos.map(c => c.userId);
+    const usuariosFiltrados = datos.filter(u => idsUsuarios.includes(u.id));
+
+    console.log("Usuarios filtrados:", usuariosFiltrados);
+
+    setComentarios(comentariosObtenidos);
+    setUsuarios(usuariosFiltrados);
+};
+
+
+    const agregarComentario = async (e: SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-    console.log("Usuario logueado:", usuario);
-    console.log("ID del usuario:", usuario?.id);
-    console.log("Comentario:", nuevoComentario);
-
-    if (!nuevoComentario.trim()) {
-        console.log("El comentario está vacío");
-        return;
-    }
-
+    setAlerta("");
     if (!usuario) {
-        console.log("No hay usuario logueado");
+        setAlerta("Iniciá sesión para comentar");
         return;
     }
+    if (!nuevoComentario.trim()) {
+        setAlerta("El comentario está vacío")
+        return;
+    }
+
 
     const body = {
         contenido: nuevoComentario,
         userId: usuario.id
     };
-
-    console.log("Datos que se envían:", body);
 
     const respuesta = await fetch(
         `http://localhost:3000/comments/post/${id}`,
@@ -84,19 +84,16 @@ function DetallePost() {
         }
     );
 
-    const data = await respuesta.json();
 
-    console.log("Estado HTTP:", respuesta.status);
-    console.log("Respuesta del servidor:", data);
 
     if (respuesta.ok) {
         setNuevoComentario("");
-        await obtenerComentarios();
+        await obtenerListaDeComentarios();
     }
 };
     useEffect(() => {
-        obtenerPost()
-        obtenerComentarios()
+        obtenerDetallesPost()
+        obtenerListaDeComentarios()
     }, [id])
   return (
     <>
@@ -106,6 +103,7 @@ function DetallePost() {
           <CarruselImagenes post={postDetalle}></CarruselImagenes>
 
 )}
+
   <div className={styles.content_descripcion}>
         {postDetalle && (
           <EtiquetasPost post={postDetalle} />
@@ -124,6 +122,9 @@ function DetallePost() {
           />
       </div >
         <div className={styles.contenedor_agregarComentario}>
+        {alerta.trim() && <Alert variant="danger">
+             {alerta}
+        </Alert> }
           <form onSubmit={agregarComentario}>
               <textarea disabled={!usuario}
                   value={nuevoComentario}
@@ -132,14 +133,14 @@ function DetallePost() {
                   maxLength={500}
               />
 
-              <div className={styles.footer_comentario}>
+              <div className={styles.footer_comentario}>    
                   <span>{nuevoComentario.length}/500</span>
-
-                  <button type="submit" disabled={!nuevoComentario.trim() || !usuario} >
+                  <button type="submit"  >
                       Comentar
                   </button>
               </div>
           </form>
+          
       </div>
   </div>
         

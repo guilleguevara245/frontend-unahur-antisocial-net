@@ -9,6 +9,15 @@ export async function obtenerPosts(): Promise<Post[]> {
   return await respuesta.json();
 }
 
+export async function obtenerPost(id:string): Promise<Post> {
+    const respuesta = await fetch(`http://localhost:3000/post/${id}`)
+
+  if (!respuesta.ok) {
+    throw new Error("Error al obtener las publicaciones: " + respuesta.status);
+  }
+  return await respuesta.json();
+}
+
 export async function obtenerCantidadComentarios(postId: number): Promise<number> {
   const respuesta = await fetch(`${API_URL}/comments/post/${postId}`);
   if (!respuesta.ok) {

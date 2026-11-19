@@ -4,18 +4,18 @@ import useUsuario from "../../context/useUsuario";
 import styles from "./PerfilUsuario.module.css";
 import type { Post } from "../../types/post";
 import TarjetaPost from "../../components/TarjetaPost/TarjetaPost";
-
+import { obtenerPosts } from "../../api/posts";
+import LoginModal from "../../components/LoginModal/LoginModal";
 function PerfilUsuario() {
     const navigate = useNavigate();
     const { usuario, cerrarSesion } = useUsuario();
 
     const [publicaciones, setPublicaciones] = useState<Post[]>([]);
 
-    const obtenerPost = async () => {
+    const obtenerPostDeUsuario = async () => {
         if (!usuario) return;
 
-        const response = await fetch("http://localhost:3000/post/");
-        const data: Post[] = await response.json();
+        const data: Post[] = await obtenerPosts();
 
         const publicacionesFiltradas = data.filter(
             post => post.userId === usuario.id
@@ -23,8 +23,6 @@ function PerfilUsuario() {
 
         setPublicaciones(publicacionesFiltradas);
 
-        console.log("Posts recibidos:", data);
-        console.log("Mis publicaciones:", publicacionesFiltradas);
     };
 
     const salir = () => {
@@ -33,12 +31,18 @@ function PerfilUsuario() {
     };
 
     useEffect(() => {
-        obtenerPost();
+        obtenerPostDeUsuario();
     }, [usuario]);
 
-    // Si no hay una sesión iniciada, no mostramos el perfil.
+    // Si no hay una sesión iniciada, se muestra el perfil.
     if (!usuario) {
-        return <p>Debés iniciar sesión para ver tu perfil.</p>;
+        return (
+            <LoginModal
+                show={true}
+                onHide={() => navigate("/")}
+                onIrARegistro={() => navigate("/registro")}  //CAMBIAR A PAGE SI NO EXISTE MODAL
+            />
+        );
     }
 
     return (
