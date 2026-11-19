@@ -1,15 +1,26 @@
 
 .contenedor {
     display: flex;
+    
     justify-content: center;
     align-items: center;
+
     margin-top: 15px;
     gap: 0;
 }
+.contenedor_sin_imagen{
+    display: flex;
+    
+    justify-content: center;
+    align-items: center;
 
+    margin-top: 15px;
+    gap: 0;
+    padding-top: 10%;
+}
 .contenedor_carrusel_descripcion {
-    flex: 0 0 50%;
-    min-width: 0;
+    flex: 0  50%;
+
     
 }
 
@@ -135,5 +146,14 @@
 @media (max-width: 600px) {
     .contenedor{
         flex-direction: column;
+    }
+    .contenedor_sin_imagen{
+        flex-direction: column;
+    }
+    .contenedor_main_comentario{
+    width: 90%;
+}
+    .contenedor_comentarios{
+        width: 90%;
     }
 }

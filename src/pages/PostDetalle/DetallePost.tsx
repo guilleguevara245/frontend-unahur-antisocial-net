@@ -100,6 +100,7 @@ const DetallePost = () => {
     }
   };
 
+
   if (cargando) {
     return (
       <div className="text-center py-5">
@@ -119,7 +120,9 @@ const DetallePost = () => {
   }
 
   return (
-    <div className={styles.contenedor}>
+    <div className={post && post.imagenes.length > 0
+    ? styles.contenedor
+    : styles.contenedor_sin_imagen}>
       <div className={styles.contenedor_carrusel_descripcion}>
         {post.imagenes.length > 0 && <CarruselImagenes post={post} />}
 
