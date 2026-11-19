@@ -1,0 +1,88 @@
+RESUMEN 3 - DETALLE DE PUBLICACIÓN Y PERFIL
+===========================================
+
+Qué pide la consigna
+--------------------
+- Detalle (/post/:id): descripción, imágenes, etiquetas, comentarios visibles y formulario
+  controlado para comentar (POST /comments).
+- Perfil: nickName, posts del usuario (por userId), cantidad de comentarios visibles, botón "Ver más" y logout.
+
+
+1. DETALLE DE PUBLICACIÓN (/post/:id)
+-------------------------------------
+Archivos: src/pages/PostDetalle/DetallePost.tsx, DetallePost.module.css,
+          src/components/CarruselImagenes, src/components/EtiquetaPost, src/components/ListaComentarios,
+          src/api/posts.ts, src/api/comentarios.ts, src/api/usuarios.ts
+
+Es una ruta abierta: cualquiera puede ver el post; para comentar hace falta sesión.
+
+Carga de datos (en paralelo, con Promise.all):
+- GET /post/:id (obtenerPost): trae el post con descripcion, usuario { id, nickName }, imagenes,
+  tags y comentarios. Los comentarios ya vienen filtrados (solo los visibles) y ordenados del más
+  nuevo al más viejo.
+- GET /users (obtenerUsuarios): se usa para mostrar el nickName de cada comentario, porque el
+  backend solo manda el userId. Si este pedido falla la página se muestra igual y el comentario
+  dice "Usuario".
+
+Comentarios visibles: el backend calcula "visible" según la fecha. Un comentario deja de mostrarse
+cuando tiene más meses de antigüedad que MESES_VISIBILIDAD (en el .env del backend; 4 en la
+configuración actual, 6 si no está definido).
+
+Estados de la página:
+- Cargando: spinner + "Cargando publicación..."
+- El post no existe (404) o el id no es válido (400):
+  "La publicación que buscás no existe o fue eliminada." + link "Volver al inicio"
+- Otro error: "No se pudo cargar la publicación. Probá de nuevo más tarde."
+
+Qué se muestra:
+- CarruselImagenes: las imágenes del post (solo si tiene). Las flechas y los indicadores aparecen
+  solo si hay más de una. Cada imagen tiene alt ("Imagen 1 de 3 de la publicación de @nick").
+- EtiquetasPost: las etiquetas.
+- "@nickName" del autor y la descripción.
+- ListaComentarios: cada comentario con foto, nickName y texto. Los comentarios del autor del post
+  llevan la marca "autor" (se compara el userId del comentario con el id del autor).
+  Sin comentarios: "Todavía no hay comentarios."
+
+Formulario para comentar (controlado):
+- Sin sesión: en lugar del formulario aparece "Iniciá sesión para comentar". El link lleva al login
+  y, después de entrar, vuelve a este post.
+- Con sesión: textarea controlado con useState, máximo 500 caracteres y contador "n/500".
+- Comentario vacío (o solo espacios): "El comentario está vacío" (no se llama al backend).
+- Envío: POST /comments/post/:id con { contenido, userId } (función crearComentario en api/comentarios.ts).
+  - 201: el comentario nuevo aparece primero en la lista y el textarea se vacía.
+  - 400: "El comentario debe tener entre 1 y 500 caracteres"
+  - 404: "La publicación o el usuario ya no existen"
+  - Error de red o 500: "No se pudo publicar el comentario. Probá de nuevo." (el texto escrito no se borra)
+  Mientras se envía, el botón dice "Enviando..." y queda deshabilitado.
+
+Diferencia con la consigna: la consigna dice POST /comments; en el backend la ruta es
+POST /comments/post/:id (el id del post va en la URL y el userId en el body).
+
+
+2. PERFIL (/perfil)
+-------------------
+Archivos: src/pages/PerfilDeUsuario/PerfilUsuario.tsx, PerfilUsuario.module.css, src/api/posts.ts
+
+Es una ruta protegida: sin sesión, RutaProtegida manda al login.
+
+Datos del usuario (salen del contexto, con useUsuario()):
+- Foto de perfil (imagen por defecto /img/perfil.jpg), nickName y email.
+- Cantidad de publicaciones ("1 publicación" / "N publicaciones").
+- Botón "Cerrar sesión" (logout): llama a cerrarSesion() y RutaProtegida manda al login.
+
+Mis publicaciones:
+- obtenerPostsDeUsuario(usuario.id): hace GET /post y se queda con los posts cuyo userId es el del
+  usuario. Se filtra en el frontend porque el backend no tiene un filtro por usuario (?userId).
+- Cada post se muestra con TarjetaPost (el mismo componente de la Home), que ya incluye la
+  cantidad de comentarios visibles y el botón "Ver más" al detalle.
+- Estados: spinner "Cargando publicaciones...", error "No se pudieron cargar tus publicaciones.
+  Probá de nuevo más tarde." y, si no hay posts, "Todavía no hiciste ninguna publicación."
+- El useEffect depende del id del usuario y cancela la carga si el componente se desmonta.
+
+
+Observaciones
+-------------
+- Para los nicknames de los comentarios se piden todos los usuarios. La mejora sería que el
+  backend incluya el usuario (nickName) en cada comentario; así se ahorra el GET /users.
+- Los posts del perfil se filtran en el frontend. Si se agrega GET /post?userId=... en el backend,
+  solo hay que cambiar obtenerPostsDeUsuario en src/api/posts.ts.

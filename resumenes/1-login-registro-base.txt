@@ -1,0 +1,133 @@
+RESUMEN 1 - LOGIN, REGISTRO Y BASE DEL PROYECTO
+===============================================
+
+Qué pide la consigna
+--------------------
+- Login: GET /users con la contraseña "123456" validada localmente.
+- Registro: formulario con validación de campos y POST /users, mostrando el mensaje de error del servidor.
+- Base común: proyecto React + TypeScript, react-router-dom, contexto de usuario con useContext y
+  localStorage, rutas protegidas, y la carpeta donde cada uno pone los tipos y los fetch de sus endpoints.
+- README (descripción, cómo correrlo y URL de la API).
+
+
+1. LOGIN (/login)
+-----------------
+Archivos: src/pages/Login/Login.tsx, Login.module.css, src/api/usuarios.ts
+
+Cómo funciona:
+1. El usuario escribe su nickName y la contraseña (inputs controlados con useState).
+2. Si el nickName está vacío se muestra "Ingresá tu nickName" sin llamar al backend.
+3. Se busca el usuario con GET /users/:nickName (función obtenerUsuarioPorNickName).
+   - 200: devuelve el usuario.
+   - 404 (no existe) o 400 (nickName inválido): la función devuelve null.
+4. La contraseña se compara con la constante CONTRASENA_VALIDA = "123456", definida dentro del
+   componente. Es la misma para todos los usuarios.
+5. Si el usuario no existe o la contraseña no coincide se muestra un único mensaje:
+   "Usuario o contraseña incorrectos". Así no se revela si el nickName existe.
+6. Si está todo bien se llama a iniciarSesion(usuario) del contexto: el usuario queda en el contexto
+   global y en localStorage. RutaPublica redirige a la página que se quería ver antes del login, o al inicio.
+7. Si el backend no responde: "No se pudo conectar con el servidor. Probá de nuevo."
+   Mientras se verifica, el botón dice "Verificando..." y queda deshabilitado.
+
+Botones: "Entrar" (#5C6A69) y "Registrarse" (#3E504E al 60%, link a /registro), uno debajo del otro al 80% del ancho.
+
+Diferencia con la consigna: la consigna dice GET /users; se usa GET /users/:nickName, que trae un solo
+usuario en vez de la lista completa. El resultado es el mismo (saber si el nickName existe).
+
+
+2. REGISTRO (/registro)
+-----------------------
+Archivos: src/pages/SignUp/SignUp.tsx, SignUp.module.css, src/api/usuarios.ts
+
+Campos: nickName y email (inputs controlados).
+
+Validación en el frontend (mismas reglas que el Joi del backend):
+- nickName entre 3 y 50 caracteres -> "El nickName debe tener entre 3 y 50 caracteres"
+- email con formato válido         -> "Ingresá un email válido (por ejemplo, nombre@mail.com)"
+Los errores se muestran debajo de cada campo (isInvalid + Form.Control.Feedback de react-bootstrap),
+recién después del primer intento de envío. El Form tiene noValidate para que no aparezcan los
+carteles del navegador. Si hay errores no se llama al backend.
+
+Envío: POST /users con { nickName, email } (función crearUsuario).
+- 201: el usuario queda con la sesión iniciada (iniciarSesion) y RutaPublica lo manda al inicio.
+- 409 (nickName o email repetido): "El nickName o el email ya están registrados".
+- 400 (datos inválidos): "Datos inválidos: el nickName debe tener entre 3 y 50 caracteres y el email debe ser válido".
+- Error de red o 500: "No se pudo conectar con el servidor. Probá de nuevo."
+Mientras se envía, el botón dice "Registrando..." y queda deshabilitado.
+
+PENDIENTE respecto a la consigna: los mensajes de 409 y 400 son textos fijos del frontend, no el
+mensaje que manda el servidor. El backend responde:
+- 409: { message: "El nickName o email ya está registrado" }
+- 400: { mensaje: "Datos de usuario inválidos", errores: [ ... ] }
+Para cumplir "mostrando el mensaje de error del servidor", crearUsuario debería leer esos campos de la respuesta.
+
+
+3. BASE COMÚN DEL PROYECTO
+--------------------------
+Tecnologías: React 19 + TypeScript, Vite, react-router-dom 7, React Bootstrap + Bootstrap 5,
+CSS Modules, OxLint. Colores y fuentes globales como variables CSS (--as-...) en src/index.css.
+
+Scripts:
+- npm run dev    -> servidor de desarrollo (http://localhost:5173)
+- npm run build  -> chequeo de tipos (tsc -b) + build de producción
+- npm run lint   -> oxlint
+
+Punto de entrada (src/main.tsx):
+  <StrictMode> <BrowserRouter> <UsuarioProvider> <App/>
+
+Contexto de usuario (carpeta src/context):
+- UsuarioContext.ts: createContext con { usuario, iniciarSesion, cerrarSesion }.
+- UsuarioProvider.tsx:
+  - Al arrancar lee el usuario guardado en localStorage (clave "usuario").
+  - Confirma contra el backend (GET /users/:nickName) que ese usuario siga existiendo. Si ya no existe
+    (por ejemplo, porque se cambió la base de datos) cierra la sesión; si existe, actualiza sus datos.
+    Si el backend no responde, mantiene la sesión.
+  - iniciarSesion(usuario): lo guarda en el estado y en localStorage.
+  - cerrarSesion(): lo borra de los dos.
+- useUsuario.ts: hook que envuelve useContext(UsuarioContext). Tira un error si se usa fuera del provider.
+  Cualquier componente lo usa así: const { usuario, iniciarSesion, cerrarSesion } = useUsuario();
+
+Rutas (src/App.tsx):
+  Abiertas a todos:          /           Home
+                             /post/:id   Detalle de publicación
+  Solo sin sesión:           /login      Login       (con sesión redirige al inicio)
+  (RutaPublica)              /registro   Registro
+  Solo con sesión:           /perfil       Perfil    (sin sesión redirige a /login)
+  (RutaProtegida)            /create-post  Crear publicación
+  Cualquier otra URL         -> redirige a /
+
+- RutaProtegida (src/components/RutaProtegida): sin usuario hace <Navigate to="/login"> y guarda en
+  state.desde la página que se quería ver.
+- RutaPublica (src/components/RutaPublica): con usuario hace <Navigate> a state.desde, o a "/".
+  Así, después del login se vuelve a la página que se había pedido.
+
+Carpetas compartidas para tipos y fetch:
+- src/types: interfaces de los datos del backend.
+  - usuario.ts: Usuario { id, nickName, email, createdAt, updatedAt }
+  - post.ts: Imagen, Tag, Comentario, Post (GET /post), PostDetalle (GET /post/:id),
+    PostCreado y RespuestaCrearPost (POST /post).
+- src/api: un archivo por recurso con las funciones que hacen los fetch.
+  - config.ts: API_URL (por defecto http://localhost:3000; se puede cambiar con VITE_API_URL en un .env).
+  - usuarios.ts, posts.ts, comentarios.ts, tags.ts.
+  Ningún componente tiene la URL del backend escrita a mano: todos usan API_URL.
+
+
+4. README
+---------
+README.md tiene:
+- Descripción de la app y lista de funcionalidades con sus rutas.
+- Tecnologías.
+- URL de la API (http://localhost:3000), Swagger (http://localhost:3000/api-docs) y link al repo del backend.
+- Cómo levantar el backend: npm i, npm run db:migrate, npm run dev (puerto 3000).
+- Cómo levantar el frontend: npm install, npm run dev, abrir http://localhost:5173.
+- Integrantes.
+
+
+ATENCIÓN ANTES DE ENTREGAR
+--------------------------
+En el repo del backend (ejercicio-56-grupo-28) hay cambios que funcionan en local pero no están
+commiteados en gitea, y el frontend depende de ellos:
+- cors (sin esto el navegador bloquea todos los pedidos desde localhost:5173),
+- imágenes y tags en GET /post,
+- el arreglo de las rutas de tags.
+Hay que commitearlos y pushearlos, o quien corrija no va a poder usar el frontend.

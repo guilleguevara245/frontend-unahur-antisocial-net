@@ -1,0 +1,95 @@
+RESUMEN 2 - HOME, NAVBAR Y TARJETA DE POST
+==========================================
+
+Qué pide la consigna
+--------------------
+- Feed de publicaciones recientes y el contenido libre de la página (banner, "sobre nosotros").
+- Navbar, con los links según haya o no un usuario logueado.
+- Componente de tarjeta de post: descripción, cantidad de comentarios visibles y botón "Ver más".
+  Lo reutiliza la persona 3 en el Perfil.
+
+
+1. HOME (/)
+-----------
+Archivos: src/pages/Home/Home.tsx, Home.module.css, src/api/posts.ts, src/api/tags.ts
+
+Es una ruta abierta: se puede ver sin iniciar sesión.
+
+Secciones, de arriba hacia abajo:
+1. Portada (banner): "Bienvenido a", título "UnaHur Anti-Social Net", slogan y un botón
+   "Ver publicaciones" que baja hasta el feed (#feed).
+2. Sobre nosotros: tres bloques ("Compartí sin presión", "Comentarios que se van", "Hecho en la UnaHur").
+3. Destacadas: tres publicaciones elegidas al azar cada vez que se entra. Solo aparece si hay más de 3 posts.
+4. Publicaciones recientes (el feed).
+
+Feed:
+- Datos: GET /post (función obtenerPosts). El backend los devuelve ordenados del más nuevo al más
+  viejo, cada uno con usuario { nickName }, imagenes y tags.
+- Se muestran en una grilla de TarjetaPost: 1 columna en celular, 2 en tablet, 3 en escritorio.
+- Paginación: 6 publicaciones por página. La página va en la URL (?page=2), así se puede compartir
+  o volver con el botón atrás.
+- Filtro por etiquetas (bonus): botones "Todas" y uno por cada etiqueta de GET /tags. La etiqueta
+  elegida va en la URL (?tag=nombre) y se filtran los posts que la tienen. Al cambiar de etiqueta
+  se vuelve a la página 1.
+
+Estados del feed:
+- Cargando: spinner + "Cargando publicaciones..."
+- Error del backend: "No pudimos cargar las publicaciones. Intentá de nuevo más tarde."
+- Sin publicaciones: "Todavía no hay publicaciones. ¡Animate a ser el primero!"
+- Filtro sin resultados: "No hay publicaciones con la etiqueta #nombre."
+
+
+2. NAVBAR
+---------
+Archivos: src/components/Navbar/Navbar.tsx, Navbar.module.css
+
+Usa Navbar, Nav y NavDropdown de react-bootstrap y NavLink de react-router-dom (el link de la
+página actual se ve en negrita). Lee el usuario con useUsuario().
+
+Siempre: logo "Anti-Social Net" (va al inicio) y link "Inicio".
+
+Sin sesión:
+- "Iniciar sesión" -> /login
+- "Registrarse"    -> /registro (con borde, como botón)
+
+Con sesión:
+- "Crear publicación" -> /create-post
+- Menú desplegable con "@nickName":
+  - "Mi perfil"      -> /perfil
+  - "Cerrar sesión"  -> llama a cerrarSesion(). Si se estaba en una página protegida, RutaProtegida
+                        manda al login.
+
+En celular los links se esconden en el menú hamburguesa, que se cierra solo al elegir una opción
+(estado "expandido" controlado con useState).
+
+
+3. TARJETA DE POST (TarjetaPost)
+--------------------------------
+Archivos: src/components/TarjetaPost/TarjetaPost.tsx, TarjetaPost.module.css
+
+Recibe un prop: post (tipo Post de src/types/post.ts).
+
+Muestra:
+- La primera imagen del post, si tiene. Si tiene más, un indicador "+N" en la esquina.
+  La URL de la imagen se arma con urlImagen() (le agrega la URL de la API a /media/...).
+- "@nickName" del autor.
+- La descripción, cortada a 3 líneas.
+- Las etiquetas (#nombre).
+- La cantidad de comentarios visibles: hace GET /comments/post/:id (obtenerCantidadComentarios).
+  El backend ya devuelve solo los comentarios visibles, así que se cuenta la lista.
+  Textos: "Cargando comentarios...", "1 comentario", "N comentarios" o
+  "No se pudieron cargar los comentarios".
+- Botón "Ver más" -> /post/:id (detalle).
+
+Detalles visuales: animación de entrada, se eleva un poco con el mouse encima, y respeta
+"reducir movimiento" del sistema operativo.
+
+Dónde se usa: en la Home (feed y destacadas) y en el Perfil (Mis publicaciones).
+
+
+Observaciones
+-------------
+- Cada tarjeta hace su propio pedido para contar comentarios: con muchos posts son muchos pedidos.
+  Funciona bien para el tamaño del TP; la mejora sería que GET /post devuelva la cantidad.
+- El feed depende de que GET /post traiga imagenes y tags. Ese cambio está en el backend local
+  pero no commiteado en gitea (ver resumen 1).

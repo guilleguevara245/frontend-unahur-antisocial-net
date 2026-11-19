@@ -1,0 +1,88 @@
+RESUMEN 4 - CREAR PUBLICACIÓN
+=============================
+
+Qué pide la consigna
+--------------------
+- Formulario con descripción obligatoria, una o más URLs de imágenes y etiquetas de GET /tags.
+- POST /posts y después un POST /postimages por cada URL, con redirección al perfil o confirmación.
+
+
+Ruta y archivos
+---------------
+Ruta: /create-post (protegida: sin sesión, RutaProtegida manda al login).
+Se llega desde el link "Crear publicación" del navbar.
+
+- src/pages/CrearPublicacion/CrearPublicacion.tsx: la página. Tiene el estado del formulario y el envío.
+- src/pages/CrearPublicacion/CrearPublicacion.module.css: estilos (tarjeta y botón con los colores del sitio).
+- src/components/CrearPublicacionForm/DescripcionForm.tsx: campo de descripción.
+- src/components/CrearPublicacionForm/ImagenesForm.tsx: selección de imágenes.
+- src/components/CrearPublicacionForm/TagSelectorForm.tsx: selección de etiquetas.
+- src/api/posts.ts: crearPost, agregarTagAPost, crearPostImagen.
+- src/api/tags.ts: obtenerTags.
+
+La página guarda todo en estados (useState) y les pasa a los componentes el valor y una función
+onChange: los tres campos son controlados.
+
+
+1. DESCRIPCIÓN (obligatoria)
+----------------------------
+- Textarea con contador "n/500" y máximo de 500 caracteres.
+- Validación con las mismas reglas que el Joi del backend: entre 3 y 500 caracteres, sin contar los
+  espacios de los bordes. Error: "La descripción debe tener entre 3 y 500 caracteres".
+- El error se muestra debajo del campo (isInvalid + Form.Control.Feedback) recién después del
+  primer intento de envío. Si hay error no se llama al backend.
+
+
+2. IMÁGENES (opcional)
+----------------------
+- Input de archivos que permite elegir una o varias imágenes a la vez. Cada archivo elegido se
+  agrega directo a la lista.
+- Validación (mismas reglas que el backend): jpg, png o webp, de hasta 5 MB cada una.
+  Los archivos que no cumplen no se agregan y se muestra por qué, por ejemplo:
+  "anim.gif" no es jpg, png ni webp / "foto.jpg" supera los 5 MB.
+- Debajo se listan las imágenes elegidas, cada una con un botón "Quitar".
+
+DIFERENCIA con la consigna: la consigna pide URLs de imágenes, pero el backend del grupo recibe
+archivos. POST /postImages usa multer y exige el archivo en el campo "imagen" (multipart/form-data);
+no acepta una URL. El backend guarda el archivo en la carpeta media y lo sirve en /media/....
+
+
+3. ETIQUETAS (opcional)
+-----------------------
+- Se cargan con GET /tags y se muestran como casillas (#nombre).
+- Estados: "Cargando etiquetas...", "No se pudieron cargar las etiquetas." y "Todavía no hay etiquetas."
+- Se guarda la lista de ids marcados.
+
+
+4. ENVÍO
+--------
+1. POST /post con { descripcion, userId } (crearPost). El backend responde { message, post } con el
+   id del post nuevo. Si falla: "No se pudo crear la publicación. Probá de nuevo."
+2. Por cada etiqueta marcada: POST /tags/:tagId/posts/:postId (agregarTagAPost).
+3. Por cada imagen: POST /postImages con un FormData { postId, imagen } (crearPostImagen).
+   Se suben de a una y en orden, para que el carrusel las muestre como se eligieron.
+4. Si todo salió bien, redirige al detalle del post recién creado (/post/:id), donde se ve cómo quedó.
+5. Si falló alguna etiqueta o imagen, el post igual queda creado. Se muestra:
+   "La publicación se creó, pero no se pudieron guardar algunas imágenes o etiquetas." con un link
+   "Ver publicación". El botón queda deshabilitado para no crear el post dos veces.
+
+Mientras se envía, el botón dice "Publicando..." y queda deshabilitado (evita doble envío).
+
+
+Diferencias con la consigna
+---------------------------
+- Imágenes por archivo en vez de URL (ver punto 2): es lo que acepta el backend.
+- Las rutas del backend son POST /post (no /posts) y POST /postImages (no /postimages).
+- Después de crear se redirige al detalle del post nuevo, que sirve como confirmación. Si se prefiere
+  ir al perfil, alcanza con cambiar navigate(`/post/${postId}`) por navigate("/perfil") en CrearPublicacion.tsx.
+- Asociar las etiquetas necesita un pedido extra por etiqueta (POST /tags/:tagId/posts/:postId),
+  porque POST /post solo recibe descripcion y userId.
+
+
+Cómo probarlo
+-------------
+1. Iniciar sesión (contraseña 123456) y entrar a "Crear publicación".
+2. Apretar "Publicar" vacío: aparece el error de la descripción.
+3. Escribir una descripción, elegir una o más imágenes y alguna etiqueta, y publicar.
+4. Debería abrir el detalle del post con el carrusel y las etiquetas, y el post aparece primero en
+   el feed de la Home y en "Mis publicaciones" del perfil.

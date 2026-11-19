@@ -24,7 +24,6 @@ AntiSocial Net es una aplicación de red social simulada, hecha como trabajo pr�
 
 El frontend consume la API REST del backend del grupo:
 
-- Repositorio del backend: <https://gitea.unahur.edu.ar/Estrategia-de-persistencia-C2-2026/ejercicio-56-grupo-28>
 - URL de la API: `http://localhost:3000`
 - Documentación (Swagger): `http://localhost:3000/api-docs`
 
@@ -38,26 +37,19 @@ VITE_API_URL=http://localhost:3000
 
 El backend tiene que estar corriendo antes de abrir el frontend.
 
-1. Clonar el repositorio del backend y entrar a la carpeta:
-
-   ```bash
-   git clone https://gitea.unahur.edu.ar/Estrategia-de-persistencia-C2-2026/ejercicio-56-grupo-28.git
-   cd ejercicio-56-grupo-28
-   ```
-
-2. Instalar las dependencias:
+1. Instalar las dependencias:
 
    ```bash
    npm i
    ```
 
-3. Crear las tablas de la base de datos:
+2. Crear las tablas de la base de datos:
 
    ```bash
    npm run db:migrate
    ```
 
-4. Iniciar el servidor (queda escuchando en el puerto 3000):
+3. Iniciar el servidor (queda escuchando en el puerto 3000):
 
    ```bash
    npm run dev
