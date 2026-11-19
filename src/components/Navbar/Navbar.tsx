@@ -3,6 +3,7 @@ import { Link, NavLink } from "react-router-dom";
 import Navbar from "react-bootstrap/Navbar";
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
+import NavDropdown from "react-bootstrap/NavDropdown";
 import styles from "./Navbar.module.css";
 import useUsuario from "../../context/useUsuario";
 
@@ -60,25 +61,20 @@ const NavigationBar = () => {
                   Inicio
                 </NavLink>
 
-                <NavLink
-                  to="/perfil"
-                  onClick={cerrarMenu}
-                  className={claseLink}
+                <NavDropdown
+                  title={`@${usuario.nickName}`}
+                  id="menu-usuario"
+                  align="end"
+                  className={styles.dropdownUsuario}
                 >
-                  Mi perfil
-                </NavLink>
-
-                <span className={`navbar-text ${styles.usuario}`}>
-                  @{usuario.nickName}
-                </span>
-
-                <button
-                  type="button"
-                  onClick={salir}
-                  className={`${styles.botonSesion} ${styles.link}`}
-                >
-                  Cerrar sesión
-                </button>
+                  <NavDropdown.Item as={Link} to="/perfil" onClick={cerrarMenu}>
+                    Mi perfil
+                  </NavDropdown.Item>
+                  <NavDropdown.Divider />
+                  <NavDropdown.Item as="button" onClick={salir}>
+                    Cerrar sesión
+                  </NavDropdown.Item>
+                </NavDropdown>
               </>
             ) : (
               <>

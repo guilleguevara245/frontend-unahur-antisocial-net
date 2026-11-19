@@ -32,8 +32,11 @@
   font-weight: 700;
 }
 
-.usuario {
-  color: var(--as-barra-texto);
+/* Toggle del dropdown de usuario: mismo color que los demás links (también abierto o con hover). */
+.dropdownUsuario {
+  --bs-nav-link-color: var(--as-barra-texto);
+  --bs-nav-link-hover-color: var(--as-barra-texto);
+  --bs-navbar-active-color: var(--as-barra-texto);
   font-weight: 500;
 }
 
