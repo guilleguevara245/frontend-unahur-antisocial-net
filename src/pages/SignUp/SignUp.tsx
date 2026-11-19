@@ -2,28 +2,16 @@ import { useState, type SubmitEvent } from 'react';
 import Alert from 'react-bootstrap/Alert';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
-import Modal from 'react-bootstrap/Modal';
-import Style from './SignUpModal.module.css'
+import Style from './SignUp.module.css'
 import { crearUsuario } from '../../api/usuarios';
 import useUsuario from '../../context/useUsuario';
 
-interface SignUpModalProps {
-  show: boolean;
-  onHide: () => void;
-}
-
-const SignUpModal = ({ show, onHide }: SignUpModalProps) => {
+const SignUp = () => {
   const { iniciarSesion } = useUsuario();
   const [nickName, setNickName] = useState('');
   const [email, setEmail] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [cargando, setCargando] = useState(false);
-
-  const limpiarFormulario = () => {
-    setNickName('');
-    setEmail('');
-    setError(null);
-  };
 
   const manejarSubmit = async (evento: SubmitEvent<HTMLFormElement>) => {
     evento.preventDefault();
@@ -35,9 +23,8 @@ const SignUpModal = ({ show, onHide }: SignUpModalProps) => {
         setError(resultado.error);
         return;
       }
-      // Usuario creado: queda con la sesión iniciada.
+      // Usuario creado: queda con la sesión iniciada y RutaPublica redirige al inicio.
       iniciarSesion(resultado.usuario);
-      onHide();
     } catch (errorDeRed) {
       console.error(errorDeRed);
       setError('No se pudo conectar con el servidor. Probá de nuevo.');
@@ -47,11 +34,10 @@ const SignUpModal = ({ show, onHide }: SignUpModalProps) => {
   };
 
   return (
-    <Modal show={show} onHide={onHide} onExited={limpiarFormulario} centered>
-      <Modal.Header closeButton>
-        <Modal.Title>Registrarse</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
+    <main className={Style.pagina}>
+      <section className={Style.tarjeta}>
+        <h1 className={Style.titulo}>Registrarse</h1>
+
         <Form onSubmit={manejarSubmit}>
           {error && <Alert variant="danger">{error}</Alert>}
 
@@ -83,9 +69,9 @@ const SignUpModal = ({ show, onHide }: SignUpModalProps) => {
             </Button>
           </div>
         </Form>
-      </Modal.Body>
-    </Modal>
+      </section>
+    </main>
   );
 }
 
-export default SignUpModal;
+export default SignUp;

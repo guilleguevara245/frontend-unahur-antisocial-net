@@ -1,3 +1,23 @@
+.pagina {
+  display: flex;
+  justify-content: center;
+  padding: 3rem 1rem;
+}
+
+.tarjeta {
+  width: 100%;
+  max-width: 420px;
+  padding: 2rem;
+  background-color: var(--as-superficie);
+  border-radius: 12px;
+  box-shadow: 0 4px 16px var(--as-sombra);
+}
+
+.titulo {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
 .botones {
   display: flex;
   flex-direction: column;
@@ -5,7 +25,7 @@
   gap: 0.5rem;
 }
 
-/* Se usa `.boton.botonX` para ganarle en especificidad a `.btn-primary` de Bootstrap. */
+/* Se usa `.boton.botonX` para ganarle en especificidad a `.btn` / `.btn-primary` de Bootstrap. */
 .boton {
   width: 80%;
 }

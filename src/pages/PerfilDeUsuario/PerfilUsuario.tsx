@@ -1,95 +1,78 @@
-
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import useUsuario from "../../context/useUsuario";
 import styles from "./PerfilUsuario.module.css";
 import type { Post } from "../../types/post";
-
-
-const usuarioLog = {
-    nickName: "tomas",
-    userId: "1",
-    email: "tomas@gmail.com"
-};
-
-
-
+import TarjetaPost from "../../components/TarjetaPost/TarjetaPost";
+import { obtenerPosts } from "../../api/posts";
 function PerfilUsuario() {
     const navigate = useNavigate();
-    const [publicaciones,setPublicacioens] = useState<Post[]>();
+    const { usuario, cerrarSesion } = useUsuario();
 
-    const cerrarSesion = () => {
-        // Pendiente: conectar con AuthContext
-    };
-      const obtenerPost=  async ()=>{
-        const response = await fetch(`http://localhost:3000/post`)
-        const data:Post[] = await response.json()
-      
-        const publicacionesFiltrada =data.filter(post =>
-          post.usuario.nickName ==usuarioLog.nickName
+    const [publicaciones, setPublicaciones] = useState<Post[]>([]);
+
+    const obtenerPostDeUsuario = async () => {
+        if (!usuario) return;
+
+        const data: Post[] = await obtenerPosts();
+
+        const publicacionesFiltradas = data.filter(
+            post => post.userId === usuario.id
         );
-        setPublicacioens(publicacionesFiltrada)
-      
-        console.log("post : ",data,publicacionesFiltrada)
-   
 
-      }
+        setPublicaciones(publicacionesFiltradas);
+
+    };
+
+    const salir = () => {
+        cerrarSesion();
+        navigate("/");
+    };
+
     useEffect(() => {
-        obtenerPost()
+        obtenerPostDeUsuario();
+    }, [usuario]);
 
-    }, [usuarioLog.userId])
+    // Si no hay una sesión iniciada, se muestra el perfil.
+if (!usuario) {
+    navigate("/login");
+    return null;
+}
+
     return (
         <main className={styles.perfil}>
             <h1>Mi perfil</h1>
 
-        <section className={styles.usuario}>
-            <div className={styles.datos_usuario}>
-                <img
-                    src="/img/perfil.jpg"
-                    alt="Foto de perfil"
-                    className={styles.avatar}
-                />
-
-                <div>
-                    <h2>{usuarioLog.nickName}</h2>
-                    <p>{usuarioLog.email}</p>
-                    <span>{ publicaciones &&publicaciones.length} publicaciones</span>
-                    
-                </div>
-                <button className={styles.cerrarSesion} onClick={cerrarSesion}>
-                    Cerrar sesión
-                </button>
-            </div>
-
-        </section>
-
-<section className={styles.publicaciones}>
-    <h2>Mis publicaciones</h2>
-
-        {publicaciones && publicaciones.map((post) => (
-            <article key={post.id} className={styles.post}>
-
-                {post.imagenes && post.imagenes.length > 0 && (
+            <section className={styles.usuario}>
+                <div className={styles.datos_usuario}>
                     <img
-                        src={`http://localhost:3000${post.imagenes[0].urlImage}`}
-                        alt="Imagen de la publicación"
-                        className={styles.imagen_post}
+                        src="/img/perfil.jpg"
+                        alt="Foto de perfil"
+                        className={styles.avatar}
                     />
-                )}
 
-                <p>{post.descripcion}</p>
+                    <div>
+                        <h2>{usuario.nickName}</h2>
+                        <p>{usuario.email}</p>
+                        <span>{publicaciones.length} publicaciones</span>
+                    </div>
 
-                <div className={styles.info_post}>
-                    <span>
-                        {post.comentariosVisibles} comentarios visibles
-                    </span>
-
-                    <button onClick={() => navigate(`/post/${post.id}`)}>
-                        Ver más
+                    <button
+                        className={styles.cerrarSesion}
+                        onClick={salir}
+                    >
+                        Cerrar sesión
                     </button>
                 </div>
-            </article>
-        ))}
-</section>
+            </section>
+
+            <section className={styles.publicaciones}>
+                <h2>Mis publicaciones</h2>
+
+                {publicaciones && publicaciones.map((post) => (
+                    <TarjetaPost post={post}></TarjetaPost>
+                ))}
+            </section>
         </main>
     );
 }

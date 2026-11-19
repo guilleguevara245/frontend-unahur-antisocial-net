@@ -12,10 +12,21 @@ export const obtenerUsuarioPorNickName = async (nickName: string): Promise<Usuar
   return await respuesta.json();
 };
 
+export const obtenerUsuarios = async (): Promise<Usuario[] > => {
+  
+  const respuesta = await fetch("http://localhost:3000/users/");
+
+  if (!respuesta.ok) {
+    throw new Error("Error al obtener el usuario: " + respuesta.status);
+  }
+  return await respuesta.json();
+};
+
 export interface DatosNuevoUsuario {
   nickName: string;
   email: string;
 }
+
 
 export type ResultadoRegistro =
   | { ok: true; usuario: Usuario }

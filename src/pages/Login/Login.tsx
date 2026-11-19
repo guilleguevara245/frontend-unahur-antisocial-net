@@ -1,19 +1,13 @@
 import { useState, type SubmitEvent } from 'react';
+import { Link } from 'react-router-dom';
 import Alert from 'react-bootstrap/Alert';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
-import Modal from 'react-bootstrap/Modal';
-import Style from './LoginModal.module.css'
+import Style from './Login.module.css'
 import { obtenerUsuarioPorNickName } from '../../api/usuarios';
 import useUsuario from '../../context/useUsuario';
 
-interface LoginModalProps {
-  show: boolean;
-  onHide: () => void;
-  onIrARegistro: () => void;
-}
-
-const LoginModal = ({ show, onHide, onIrARegistro }: LoginModalProps) => {
+const Login = () => {
   // Contraseña única para todos los usuarios
   const CONTRASENA_VALIDA = '123456';
 
@@ -22,12 +16,6 @@ const LoginModal = ({ show, onHide, onIrARegistro }: LoginModalProps) => {
   const [contrasena, setContrasena] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [cargando, setCargando] = useState(false);
-
-  const limpiarFormulario = () => {
-    setNickName('');
-    setContrasena('');
-    setError(null);
-  };
 
   const manejarSubmit = async (evento: SubmitEvent<HTMLFormElement>) => {
     evento.preventDefault();
@@ -50,8 +38,8 @@ const LoginModal = ({ show, onHide, onIrARegistro }: LoginModalProps) => {
         setError('Contraseña incorrecta');
         return;
       }
+      // Al guardar el usuario, RutaPublica redirige a la página que se quería ver (o al inicio).
       iniciarSesion(usuario);
-      onHide();
     } catch (errorDeRed) {
       console.error(errorDeRed);
       setError('No se pudo conectar con el servidor. Probá de nuevo.');
@@ -61,11 +49,10 @@ const LoginModal = ({ show, onHide, onIrARegistro }: LoginModalProps) => {
   };
 
   return (
-    <Modal show={show} onHide={onHide} onExited={limpiarFormulario} centered>
-      <Modal.Header closeButton>
-        <Modal.Title>Iniciar sesión</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
+    <main className={Style.pagina}>
+      <section className={Style.tarjeta}>
+        <h1 className={Style.titulo}>Iniciar sesión</h1>
+
         <Form onSubmit={manejarSubmit}>
           {error && <Alert variant="danger">{error}</Alert>}
 
@@ -94,17 +81,17 @@ const LoginModal = ({ show, onHide, onIrARegistro }: LoginModalProps) => {
             <Button type="submit" disabled={cargando} className={`${Style.boton} ${Style.botonEntrar}`}>
               {cargando ? 'Verificando...' : 'Entrar'}
             </Button>
-            <Button type='button' onClick={onIrARegistro} className={`${Style.boton} ${Style.botonRegistro}`}>
+            <Link to="/registro" className={`btn ${Style.boton} ${Style.botonRegistro}`}>
               Registrarse
-            </Button>
+            </Link>
           </div>
           <Form.Text className="text-muted">
             Si te olvidaste la contraseña cagate
           </Form.Text>
         </Form>
-      </Modal.Body>
-    </Modal>
+      </section>
+    </main>
   );
 }
 
-export default LoginModal;
+export default Login;

@@ -1,3 +1,23 @@
+.pagina {
+  display: flex;
+  justify-content: center;
+  padding: 3rem 1rem;
+}
+
+.tarjeta {
+  width: 100%;
+  max-width: 420px;
+  padding: 2rem;
+  background-color: var(--as-superficie);
+  border-radius: 12px;
+  box-shadow: 0 4px 16px var(--as-sombra);
+}
+
+.titulo {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
 .botones {
   display: flex;
   flex-direction: column;
@@ -10,7 +30,7 @@
   width: 80%;
 }
 
-/* Acción principal del modal: mismo color que "Entrar" en el login. */
+/* Acción principal de la página: mismo color que "Entrar" en el login. */
 .boton.botonRegistrarse {
   --bs-btn-color: #FFFFFF;
   --bs-btn-bg: #5C6A69;
