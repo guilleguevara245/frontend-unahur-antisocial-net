@@ -43,6 +43,26 @@
 }
 
 
+/* botón volver: alineado con el borde izquierdo del contenido (50% + 40% centrados) */
+.barraVolver {
+    width: 90%;
+    margin: 15px auto 0;
+}
+
+.volver {
+    padding: 0.3rem 0.9rem;
+    border: 1px solid var(--as-borde);
+    border-radius: 6px;
+    background-color: transparent;
+    color: var(--as-texto);
+    font-size: 0.95rem;
+    transition: background-color 0.2s ease;
+}
+
+.volver:hover {
+    background-color: rgba(47, 59, 59, 0.08);
+}
+
 /* columna de comentarios */
 .contenedor_comentarios {
     flex: 0 1 40%;
@@ -147,6 +167,7 @@
     .contenedor{
         flex-direction: column;
     }
+<<<<<<< Updated upstream
     .contenedor_sin_imagen{
         flex-direction: column;
     }
@@ -155,5 +176,11 @@
 }
     .contenedor_comentarios{
         width: 90%;
+=======
+
+    .barraVolver {
+        width: 100%;
+        padding: 0 15px;
+>>>>>>> Stashed changes
     }
 }

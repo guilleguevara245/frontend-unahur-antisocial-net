@@ -1,5 +1,5 @@
 import { useEffect, useState, type SubmitEvent } from "react";
-import { Link, useLocation, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import Alert from "react-bootstrap/Alert";
 import Spinner from "react-bootstrap/Spinner";
 import styles from "./DetallePost.module.css";
@@ -18,6 +18,7 @@ const MAX_COMENTARIO = 500;
 const DetallePost = () => {
   const { id } = useParams<{ id: string }>();
   const location = useLocation();
+  const navigate = useNavigate();
   const { usuario } = useUsuario();
 
   const [post, setPost] = useState<PostDetalle | null>(null);
@@ -100,6 +101,18 @@ const DetallePost = () => {
     }
   };
 
+<<<<<<< Updated upstream
+=======
+  // Vuelve a la página anterior. Si se entró directo por la URL no hay página anterior en la app,
+  // así que lleva al inicio.
+  const volver = () => {
+    if (location.key === "default") {
+      navigate("/");
+    } else {
+      navigate(-1);
+    }
+  };
+>>>>>>> Stashed changes
 
   if (cargando) {
     return (
@@ -120,6 +133,7 @@ const DetallePost = () => {
   }
 
   return (
+<<<<<<< Updated upstream
     <div className={post && post.imagenes.length > 0
     ? styles.contenedor
     : styles.contenedor_sin_imagen}>
@@ -131,51 +145,72 @@ const DetallePost = () => {
           <h3>@{post.usuario.nickName}</h3>
           <p>{post.descripcion}</p>
         </div>
+=======
+    <>
+      <div className={styles.barraVolver}>
+        <button type="button" className={styles.volver} onClick={volver}>
+          <span aria-hidden="true">‹</span> Volver
+        </button>
+>>>>>>> Stashed changes
       </div>
 
-      <div className={styles.contenedor_comentarios}>
-        <h5>Comentarios</h5>
-        <div className={styles.conenedor_comentario}>
-          {comentarios.length > 0 ? (
-            <ListaComentarios
-              comentarios={comentarios}
-              nickNames={nickNames}
-              autorId={post.usuario.id}
-            />
-          ) : (
-            <p className={styles.sinComentarios}>Todavía no hay comentarios.</p>
-          )}
+      <div className={styles.contenedor}>
+        <div className={styles.contenedor_carrusel_descripcion}>
+          {post.imagenes.length > 0 && <CarruselImagenes post={post} />}
+
+          <div className={styles.content_descripcion}>
+            <EtiquetasPost post={post} />
+            <h3>@{post.usuario.nickName}</h3>
+            <p>{post.descripcion}</p>
+          </div>
         </div>
 
-        <div className={styles.contenedor_agregarComentario}>
-          {usuario ? (
-            <>
-              {alerta && <Alert variant="danger">{alerta}</Alert>}
-              <form onSubmit={agregarComentario}>
-                <textarea
-                  value={nuevoComentario}
-                  onChange={(evento) => setNuevoComentario(evento.currentTarget.value)}
-                  placeholder="Escribe un comentario..."
-                  aria-label="Nuevo comentario"
-                  maxLength={MAX_COMENTARIO}
-                />
+        <div className={styles.contenedor_comentarios}>
+          <h5>Comentarios</h5>
+          <div className={styles.conenedor_comentario}>
+            {comentarios.length > 0 ? (
+              <ListaComentarios
+                comentarios={comentarios}
+                nickNames={nickNames}
+                autorId={post.usuario.id}
+              />
+            ) : (
+              <p className={styles.sinComentarios}>Todavía no hay comentarios.</p>
+            )}
+          </div>
 
-                <div className={styles.footer_comentario}>
-                  <span>{nuevoComentario.length}/{MAX_COMENTARIO}</span>
-                  <button type="submit" disabled={enviando}>
-                    {enviando ? "Enviando..." : "Comentar"}
-                  </button>
-                </div>
-              </form>
-            </>
-          ) : (
-            <p className="mb-0">
-              <Link to="/login" state={{ desde: location.pathname }}>Iniciá sesión</Link> para comentar.
-            </p>
-          )}
+          <div className={styles.contenedor_agregarComentario}>
+            {usuario ? (
+              <>
+                {alerta && <Alert variant="danger">{alerta}</Alert>}
+                <form onSubmit={agregarComentario}>
+                  <textarea
+                    value={nuevoComentario}
+                    onChange={(evento) => setNuevoComentario(evento.currentTarget.value)}
+                    placeholder="Escribe un comentario..."
+                    aria-label="Nuevo comentario"
+                    maxLength={MAX_COMENTARIO}
+                  />
+
+                  <div className={styles.footer_comentario}>
+                    <span>{nuevoComentario.length}/{MAX_COMENTARIO}</span>
+                    <button type="submit" disabled={enviando}>
+                      {enviando ? "Enviando..." : "Comentar"}
+                    </button>
+                  </div>
+                </form>
+              </>
+            ) : (
+              <p className="mb-0">
+                {/* replace: después del login se vuelve a este post sin dejarlo repetido en el historial,
+                    así "Volver" no queda en la misma página. */}
+                <Link to="/login" replace state={{ desde: location.pathname }}>Iniciá sesión</Link> para comentar.
+              </p>
+            )}
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
